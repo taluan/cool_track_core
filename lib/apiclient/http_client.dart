@@ -6,10 +6,12 @@ import 'package:base_code_flutter/base_network/app_exception.dart';
 import 'package:base_code_flutter/flavor/flavor.dart';
 import 'package:base_code_flutter/management/cache_manager.dart';
 import 'package:base_code_flutter/model/log_api_model.dart';
-import 'package:base_code_flutter/utils/helper_utils.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:http/http.dart';
+import 'package:path/path.dart' as pathFile;
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 
 import '../base_core.dart';
 
@@ -290,15 +292,25 @@ class HttpClient extends ApiClientRequest {
             for (var file in files) {
               var fileUpload = file;
               if (api.resizeImage) {
-                ImageProperties properties = await FlutterNativeImage.getImageProperties(file.path);
-                final width = (properties.width ?? 0);
-                final height = (properties.height ?? 0);
-                int maxWidth = 1000;
-                if (width > maxWidth) {
-                  fileUpload = await FlutterNativeImage.compressImage(file.path,
-                      quality: 90,
-                      targetWidth: maxWidth,
-                      targetHeight: (height * maxWidth / width).round());
+                try {
+                  final bytes = await file.readAsBytes();
+                  final image = img.decodeImage(bytes);
+                  final width = (image?.width ?? 0);
+                  final height = (image?.height ?? 0);
+                  int maxWidth = 1000;
+                  if (width > maxWidth) {
+                    var imageBytes = await FlutterImageCompress.compressWithList(
+                      bytes,
+                      minHeight: (height * maxWidth / width).round(),
+                      minWidth: maxWidth,
+                    );
+                    final tempDir = await getTemporaryDirectory();
+                    final filePath = pathFile.join(tempDir.path, pathFile.basename(file.path));
+                    // Ghi dữ liệu vào file
+                    fileUpload = await File(filePath).writeAsBytes(imageBytes);
+                  }
+                } catch(e) {
+                  debugPrint("resizeImage error: ${e.toString()}");
                 }
               }
               request.files.add(MultipartFile(

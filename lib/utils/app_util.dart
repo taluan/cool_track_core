@@ -16,6 +16,10 @@ class AppUtil {
   PackageInfo? _appInfo;
   String? _deviceId;
 
+  DeviceInfoModel? get deviceInfo => _deviceInfo;
+
+  PackageInfo? get appInfo => _appInfo;
+
 
   Future<String?> getDeviceId() async {
     if (_deviceId == null) {

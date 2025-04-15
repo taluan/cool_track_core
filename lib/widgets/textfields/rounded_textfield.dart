@@ -35,6 +35,7 @@ class RoundedTextField extends StatelessWidget {
   final BoxConstraints? suffixIconConstraints;
   final int? maxLength;
   final GestureTapCallback? onTap;
+  final ValueChanged<String>? onFieldSubmitted;
   const RoundedTextField(
       {super.key,
       this.initialValue,
@@ -65,7 +66,9 @@ class RoundedTextField extends StatelessWidget {
       this.suffixIconConstraints,
       this.maxLength,
       this.enabled = true,
-      this.onTap,});
+      this.onTap,
+        this.onFieldSubmitted
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +136,7 @@ class RoundedTextField extends StatelessWidget {
             onEditingComplete: () {
               FocusScope.of(context).unfocus();
             },
+            onFieldSubmitted: onFieldSubmitted,
           ),
         ],
       ),
