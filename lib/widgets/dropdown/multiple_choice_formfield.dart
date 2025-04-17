@@ -117,7 +117,7 @@ class _MultipleChoiceFormFieldWidget<T> extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: values.isEmpty ? Padding(
-                    padding: const EdgeInsets.only(left: 2, top: 6, bottom: 6),
+                    padding: const EdgeInsets.only(left: 10, top: 11, bottom: 6, right: 10),
                     child: Text(hintText?.toString() ?? "", style: inputDecorationTheme.hintStyle,)) :
                 SingleChildScrollView(
                   padding: const EdgeInsets.all(7),
@@ -142,7 +142,7 @@ class _MultipleChoiceFormFieldWidget<T> extends StatelessWidget {
                   ),
                 )),
                 const Padding(
-                    padding: EdgeInsets.only(top: 6),
+                    padding: EdgeInsets.only(top: 9, right: 8),
                     child: Icon(Icons.keyboard_arrow_down_outlined, size: 22, color: Colors.grey,))
               ],
             ),

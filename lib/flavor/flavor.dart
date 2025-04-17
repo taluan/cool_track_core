@@ -3,11 +3,10 @@ enum FlavorType {dev, uat, pro}
 
 class FlavorValue {
   String rootUrl;
-  final String tenantDomain;
   final String appName;
   final bool showLog;
 
-  FlavorValue({required this.rootUrl, required this.tenantDomain, required this.appName, this.showLog = false});
+  FlavorValue({required this.rootUrl, required this.appName, this.showLog = false});
 }
 
 mixin AppFlavor {
@@ -40,14 +39,6 @@ mixin AppFlavor {
 
   static String get appName {
     return _value.appName;
-  }
-
-  static String getTenantDomain({required String tenant}) {
-    return value.tenantDomain.replaceAll("{tenant}", tenant);
-  }
-
-  static String getApprovalFileUrl({required String filePath, required String fileName}) {
-    return "$rootUrl/approval/file/common?${Uri(queryParameters: {'path': filePath, 'name': fileName}.map((key, value) => MapEntry(key, value.toString()))).query}";
   }
 
   static void loadConfig({FlavorType flavorType = FlavorType.pro, required FlavorValue value}) {
