@@ -86,7 +86,6 @@ class _MultipleChoiceFormFieldWidget<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasError = state.hasError && state.errorText != null;
     final values = state.value ?? [];
-    debugPrint("build: $values");
     final inputDecorationTheme = context.inputDecorationTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +95,6 @@ class _MultipleChoiceFormFieldWidget<T> extends StatelessWidget {
         InkWell(
           onTap: enable ? () async {
             final result = await showSelectedItems();
-            debugPrint("result: $result - $values");
             if (result != null) {
               if (values.isEmpty && result.isNotEmpty) {
                 state.reset();
@@ -113,32 +111,35 @@ class _MultipleChoiceFormFieldWidget<T> extends StatelessWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(8)),
                 border: Border.all(color: hasError ? context.colorScheme.error: inputDecorationTheme.border?.borderSide.color ?? Colors.grey.shade200)
             ),
-            constraints: const BoxConstraints(minHeight: AppConst.textFieldHeight),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            constraints: const BoxConstraints(minHeight: AppConst.textFieldHeight, maxHeight: 200),
+            padding: const EdgeInsets.all(1),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: values.isEmpty ? Padding(
                     padding: const EdgeInsets.only(left: 2, top: 6, bottom: 6),
                     child: Text(hintText?.toString() ?? "", style: inputDecorationTheme.hintStyle,)) :
-                Wrap(
-                  spacing: 5, runSpacing: 5,
-                  children: values.map((e) => Chip(
-                    backgroundColor: const Color(0x145D6573),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    side: inputDecorationTheme.border?.borderSide,
-                    label: itemBuilder?.call(e) ?? Text(e.toString(), maxLines: 1, overflow: TextOverflow.ellipsis,),
-                    labelStyle: inputDecorationTheme.labelStyle,
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 2),
-                    deleteIcon: enable ? Icon(
-                      Icons.close,
-                      size: 16, color: Colors.grey,
-                    ) : const SizedBox(),
-                    onDeleted: () {
-                      state.didChange(values..remove(e));
-                      onChanged?.call(values);
-                    },
-                  )).toList(),
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(7),
+                  child: Wrap(
+                    spacing: 5, runSpacing: 5,
+                    children: values.map((e) => Chip(
+                      backgroundColor: const Color(0x145D6573),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      side: inputDecorationTheme.border?.borderSide,
+                      label: itemBuilder?.call(e) ?? Text(e.toString(), maxLines: 1, overflow: TextOverflow.ellipsis,),
+                      labelStyle: inputDecorationTheme.labelStyle,
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+                      deleteIcon: enable ? Icon(
+                        Icons.close,
+                        size: 16, color: Colors.grey,
+                      ) : const SizedBox(),
+                      onDeleted: () {
+                        state.didChange(values..remove(e));
+                        onChanged?.call(values);
+                      },
+                    )).toList(),
+                  ),
                 )),
                 const Padding(
                     padding: EdgeInsets.only(top: 6),
