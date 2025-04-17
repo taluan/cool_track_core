@@ -18,17 +18,20 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
     return _current!;
   }
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
+    final name =
+        (locale.countryCode?.isEmpty ?? false)
+            ? locale.languageCode
+            : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -41,8 +44,10 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -52,172 +57,87 @@ class S {
 
   /// `Đóng`
   String get close {
-    return Intl.message(
-      'Đóng',
-      name: 'close',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Đóng', name: 'close', desc: '', args: []);
   }
 
   /// `Đồng ý`
   String get agree {
-    return Intl.message(
-      'Đồng ý',
-      name: 'agree',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Đồng ý', name: 'agree', desc: '', args: []);
   }
 
   /// `Xác nhận`
   String get confirm {
-    return Intl.message(
-      'Xác nhận',
-      name: 'confirm',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Xác nhận', name: 'confirm', desc: '', args: []);
   }
 
   /// `Hủy`
   String get cancel {
-    return Intl.message(
-      'Hủy',
-      name: 'cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Hủy', name: 'cancel', desc: '', args: []);
   }
 
   /// `Xong`
   String get done {
-    return Intl.message(
-      'Xong',
-      name: 'done',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Xong', name: 'done', desc: '', args: []);
   }
 
   /// `Tiếp tục`
   String get tiep_tuc {
-    return Intl.message(
-      'Tiếp tục',
-      name: 'tiep_tuc',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tiếp tục', name: 'tiep_tuc', desc: '', args: []);
   }
 
   /// `Bắt đầu`
   String get bat_dau {
-    return Intl.message(
-      'Bắt đầu',
-      name: 'bat_dau',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Bắt đầu', name: 'bat_dau', desc: '', args: []);
   }
 
   /// `Bỏ qua`
   String get bo_qua {
-    return Intl.message(
-      'Bỏ qua',
-      name: 'bo_qua',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Bỏ qua', name: 'bo_qua', desc: '', args: []);
   }
 
   /// `Cấu hình`
   String get settings {
-    return Intl.message(
-      'Cấu hình',
-      name: 'settings',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Cấu hình', name: 'settings', desc: '', args: []);
   }
 
   /// `Phiên bản`
   String get version {
-    return Intl.message(
-      'Phiên bản',
-      name: 'version',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Phiên bản', name: 'version', desc: '', args: []);
   }
 
   /// `Đăng xuất`
   String get logout {
-    return Intl.message(
-      'Đăng xuất',
-      name: 'logout',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Đăng xuất', name: 'logout', desc: '', args: []);
   }
 
   /// `Gửi`
   String get send {
-    return Intl.message(
-      'Gửi',
-      name: 'send',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Gửi', name: 'send', desc: '', args: []);
   }
 
   /// `Lưu`
   String get save {
-    return Intl.message(
-      'Lưu',
-      name: 'save',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Lưu', name: 'save', desc: '', args: []);
   }
 
   /// `Xóa`
   String get delete {
-    return Intl.message(
-      'Xóa',
-      name: 'delete',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Xóa', name: 'delete', desc: '', args: []);
   }
 
   /// `Sửa`
   String get edit {
-    return Intl.message(
-      'Sửa',
-      name: 'edit',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Sửa', name: 'edit', desc: '', args: []);
   }
 
   /// `Thêm`
   String get add {
-    return Intl.message(
-      'Thêm',
-      name: 'add',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Thêm', name: 'add', desc: '', args: []);
   }
 
   /// `Cập nhật`
   String get update {
-    return Intl.message(
-      'Cập nhật',
-      name: 'update',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Cập nhật', name: 'update', desc: '', args: []);
   }
 
   /// `Vui lòng nhập họ và tên`
@@ -275,9 +195,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   const AppLocalizationDelegate();
 
   List<Locale> get supportedLocales {
-    return const <Locale>[
-      Locale.fromSubtags(languageCode: 'vi'),
-    ];
+    return const <Locale>[Locale.fromSubtags(languageCode: 'vi')];
   }
 
   @override
