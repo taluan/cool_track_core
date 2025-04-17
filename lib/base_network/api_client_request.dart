@@ -1,5 +1,6 @@
 
-import 'package:connectivity/connectivity.dart';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'api_router.dart';
 import 'base_response.dart';
@@ -30,7 +31,7 @@ abstract class ApiClientRequest {
 
   Future<bool> isConnectedNetWork() async {
     final connectivityStatus = await Connectivity().checkConnectivity();
-    return connectivityStatus != ConnectivityResult.none;
+    return !connectivityStatus.contains(ConnectivityResult.none);
   }
 
   ///
