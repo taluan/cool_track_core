@@ -10,8 +10,6 @@ import '../textfields/rounded_textfield.dart';
 import '../widget_no_data.dart';
 import 'multiple_choice_formfield.dart';
 
-typedef SelectItemCallback<T> = Function(T);
-
 class DropDownValueController<T extends KeyValueObject>
     extends ValueNotifier<List<T>?> {
   DropDownValueController({T? selectedItem})
@@ -62,10 +60,10 @@ class DropDownValueController<T extends KeyValueObject>
 
 // ignore: must_be_immutable
 class RoundedDropDown<T extends KeyValueObject> extends StatefulWidget {
-  List<T>? selectedItems;
+  T? selectedItem;
   final String? labelText;
   final String? hintText;
-  final SelectItemCallback? onChanged;
+  final Function(T)? onChanged;
   final FormFieldValidator<String>? validator;
   final DropDownValueController<T>? controller;
   final bool enabled;
@@ -85,14 +83,12 @@ class RoundedDropDown<T extends KeyValueObject> extends StatefulWidget {
   final bool required;
   final Widget? Function(T)? titleBuilder;
 
-  late final bool multiSelect;
-
   RoundedDropDown({
     super.key,
     this.hintText,
     this.labelText,
     this.datas,
-    T? selectedItem,
+    this.selectedItem,
     this.controller,
     this.onChanged,
     this.validator,
@@ -112,58 +108,21 @@ class RoundedDropDown<T extends KeyValueObject> extends StatefulWidget {
     this.searchLocal = true,
     this.titleBuilder,
   })  : assert(
-          selectedItem == null || controller == null,
-        ),
+  selectedItem == null || controller == null,
+  ),
         assert(
-          datas == null || dataAsync == null,
+        datas == null || dataAsync == null,
         ) {
-    multiSelect = false;
     if (selectedItem != null) {
-      selectedItems = [selectedItem];
+      selectedItem = selectedItem;
     } else if (controller?.selectedItems != null) {
-      selectedItems = controller!.selectedItems;
-    }
-  }
-
-  RoundedDropDown.multiSelection({
-    super.key,
-    this.hintText,
-    this.labelText,
-    this.datas,
-    this.selectedItems,
-    this.controller,
-    this.onChanged,
-    this.validator,
-    this.enabled = true,
-    this.checkBeforeShowItem,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.dataAsync,
-    this.required = false,
-    this.margin,
-    this.padding,
-    this.textStyle,
-    this.textAlign,
-    this.backgroundColor,
-    this.maxLine = 1,
-    this.isCache = true,
-    this.searchLocal = true,
-    this.titleBuilder
-  })  : assert(
-          selectedItems == null || controller == null,
-        ),
-        assert(
-          datas == null || dataAsync == null,
-        ) {
-    multiSelect = true;
-    if (controller?.selectedItems != null) {
-      selectedItems = controller!.selectedItems;
+      selectedItem = controller!.selectedItem;
     }
   }
 
   @override
   State<RoundedDropDown> createState() {
-    return multiSelect ? _RoundedDropDownMultipleState<T>() : _RoundedDropDownState<T>();
+    return _RoundedDropDownState<T>();
   }
 }
 
@@ -174,7 +133,7 @@ class _RoundedDropDownState<T extends KeyValueObject> extends State<RoundedDropD
   @override
   void initState() {
     if (widget.controller != null) {
-      widget.selectedItems = widget.controller?.selectedItems;
+      widget.selectedItem = widget.controller?.selectedItem;
       widget.controller?.addListener(onChangeListener);
 
       widget.controller?._onUpdateDataSource = (dataSource) {
@@ -189,7 +148,7 @@ class _RoundedDropDownState<T extends KeyValueObject> extends State<RoundedDropD
   }
 
   void onChangeListener() {
-    widget.selectedItems = widget.controller?.selectedItems;
+    widget.selectedItem = widget.controller?.selectedItem;
     textController.text = generateSelectedTitle();
   }
 
@@ -203,9 +162,7 @@ class _RoundedDropDownState<T extends KeyValueObject> extends State<RoundedDropD
   @override
   void didUpdateWidget(covariant RoundedDropDown<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!listEquals(widget.selectedItems, oldWidget.selectedItems)) {
-      // print("didUpdateWidget oldWidget${oldWidget.selectedItems?.fold("", (previousValue, element) => "${previousValue}_${element.title}")}");
-      // print("didUpdateWidget ${widget.selectedItems?.fold("", (previousValue, element) => "${previousValue}_${element.title}")}");
+    if (widget.selectedItem?.hashKey != oldWidget.selectedItem?.hashKey) {
       textController.dispose();
       textController = TextEditingController(text: generateSelectedTitle());
     }
@@ -281,25 +238,25 @@ class _RoundedDropDownState<T extends KeyValueObject> extends State<RoundedDropD
                 datas = lsData;
               }
               debugPrint('data length: ${lsData.length}');
-              return DropDownSelectionBottomSheet(
+              return DropDownSelectionBottomSheet<T>(
                 controller: controller,
                 title: title ?? "",
                 datas: lsData,
                 searchDataAsync: !widget.searchLocal ? widget.dataAsync : null,
-                multiSelect: widget.multiSelect,
-                selected: widget.selectedItems,
+                multiSelect: false,
+                selected: (widget.selectedItem != null ? [widget.selectedItem!] : []),
                 titleBuilder: widget.titleBuilder,
               );
             },
           );
         } else {
-          child = DropDownSelectionBottomSheet(
+          child = DropDownSelectionBottomSheet<T>(
             controller: controller,
             title: title ?? "",
             datas: widget.datas ?? datas,
             searchDataAsync: !widget.searchLocal ? widget.dataAsync : null,
-            multiSelect: widget.multiSelect,
-            selected: widget.selectedItems,
+            multiSelect: false,
+            selected: (widget.selectedItem != null ? [widget.selectedItem!] : []),
             titleBuilder: widget.titleBuilder,
           );
         }
@@ -307,7 +264,7 @@ class _RoundedDropDownState<T extends KeyValueObject> extends State<RoundedDropD
       },
     );
     List<T>? selectResult =
-        await showModalBottomSheet<List<T>?>(
+    await showModalBottomSheet<List<T>?>(
       context: context,
       shape: const RoundedRectangleBorder(
         // <-- SEE HERE
@@ -324,14 +281,10 @@ class _RoundedDropDownState<T extends KeyValueObject> extends State<RoundedDropD
             child: body);
       },
     );
-    if (selectResult != null) {
+    if (selectResult != null && selectResult.isNotEmpty) {
       //kiểm tra nếu trùng value thì return
-      if (widget.multiSelect) {
-        if (listEquals(selectResult, widget.selectedItems)) {
-          return;
-        }
-      } else if (selectResult.firstOrNull?.hashKey ==
-          widget.selectedItems?.firstOrNull?.hashKey) {
+      if (selectResult.firstOrNull?.hashKey ==
+          widget.selectedItem?.hashKey) {
         return;
       }
       if (widget.controller != null) {
@@ -339,23 +292,69 @@ class _RoundedDropDownState<T extends KeyValueObject> extends State<RoundedDropD
           widget.controller?.selectedItems = selectResult;
         }
       } else {
-        widget.selectedItems = selectResult;
+        widget.selectedItem = selectResult.firstOrNull;
         textController.text = generateSelectedTitle();
       }
       if (widget.onChanged != null) {
-        widget.onChanged?.call(
-            widget.multiSelect ? selectResult : selectResult.firstOrNull);
+        widget.onChanged?.call(selectResult.first);
       }
     }
   }
 
   String generateSelectedTitle() {
-    return widget.selectedItems?.map((e) => e.titleDisplay.toString()).join(', ') ??
-        '';
+    return widget.selectedItem?.titleDisplay ?? '';
   }
 }
 
-class _RoundedDropDownMultipleState<T extends KeyValueObject> extends State<RoundedDropDown<T>> {
+
+// ignore: must_be_immutable
+class RoundedDropDownMutiple<T extends KeyValueObject> extends StatefulWidget {
+  List<T>? selectedItems;
+  final String? labelText;
+  final String? hintText;
+  final Function(List<T>)? onChanged;
+  final FormFieldValidator<List<T>>? validator;
+  final DropDownValueController<T>? controller;
+  final bool enabled;
+  final bool Function()? checkBeforeShowItem;
+  final Future<List<T>> Function(String?)? dataAsync;
+  final List<T>? datas;
+  final bool isCache;
+  final bool searchLocal;
+  final bool required;
+  final Widget? Function(T)? titleBuilder;
+
+  RoundedDropDownMutiple({
+    super.key,
+    this.hintText,
+    this.labelText,
+    this.datas,
+    this.selectedItems,
+    this.controller,
+    this.onChanged,
+    this.validator,
+    this.enabled = true,
+    this.checkBeforeShowItem,
+    this.dataAsync,
+    this.required = false,
+    this.isCache = true,
+    this.searchLocal = true,
+    this.titleBuilder,
+  })  : assert(
+  selectedItems == null || controller == null,
+  ),
+        assert(
+        datas == null || dataAsync == null,
+        );
+
+
+  @override
+  State<RoundedDropDownMutiple> createState() {
+    return _RoundedDropDownMultipleState<T>();
+  }
+}
+
+class _RoundedDropDownMultipleState<T extends KeyValueObject> extends State<RoundedDropDownMutiple<T>> {
   List<T> datas = [];
   late MultipleChoiceFormFieldController<T> multipleChoiceFormFieldController;
 
@@ -399,17 +398,18 @@ class _RoundedDropDownMultipleState<T extends KeyValueObject> extends State<Roun
       required: widget.required,
       enabled: widget.enabled,
       initialValue: widget.selectedItems ?? [],
+      validator: widget.validator,
       showSelectedItems: () => showDropDownSelect(),
       onChanged: (values) {
         // debugPrint("MultipleChoiceFormField onChanged");
-      widget.selectedItems = values;
-      if (widget.controller != null) {
-        widget.controller?.selectedItems = values;
-      }
-      if (widget.onChanged != null) {
-        widget.onChanged?.call(widget.selectedItems);
-      }
-    },);
+        widget.selectedItems = values;
+        if (widget.controller != null) {
+          widget.controller?.selectedItems = values;
+        }
+        if (widget.onChanged != null) {
+          widget.onChanged?.call(widget.selectedItems ?? []);
+        }
+      },);
   }
 
 
@@ -453,7 +453,7 @@ class _RoundedDropDownMultipleState<T extends KeyValueObject> extends State<Roun
                 title: widget.hintText ?? widget.labelText ?? "",
                 datas: lsData,
                 searchDataAsync: !widget.searchLocal ? widget.dataAsync : null,
-                multiSelect: widget.multiSelect,
+                multiSelect: true,
                 selected: widget.selectedItems,
                 titleBuilder: widget.titleBuilder,
               );
@@ -465,7 +465,7 @@ class _RoundedDropDownMultipleState<T extends KeyValueObject> extends State<Roun
             title: widget.hintText ?? widget.labelText ?? "",
             datas: widget.datas ?? datas,
             searchDataAsync: !widget.searchLocal ? widget.dataAsync : null,
-            multiSelect: widget.multiSelect,
+            multiSelect: true,
             selected: widget.selectedItems,
             titleBuilder: widget.titleBuilder,
           );
@@ -492,10 +492,5 @@ class _RoundedDropDownMultipleState<T extends KeyValueObject> extends State<Roun
       },
     );
     return selectResult;
-  }
-
-  String generateSelectedTitle() {
-    return widget.selectedItems?.map((e) => e.titleDisplay.toString()).join(', ') ??
-        '';
   }
 }

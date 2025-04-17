@@ -34,6 +34,7 @@ class MultipleChoiceFormField<T> extends FormField<List<T>?> {
     bool enabled = true,
     super.initialValue,
     Function(List<T>)? onChanged,
+    FormFieldValidator<List<T>>? validator,
     required Future<List<T>?> Function() showSelectedItems,
     final Widget? Function(T)? itemBuilder,
   }) : super(
@@ -41,7 +42,7 @@ class MultipleChoiceFormField<T> extends FormField<List<T>?> {
       if (value == null || value.isEmpty) {
         return "Vui lòng chọn giá trị";
       }
-    } : null),
+    } : validator),
     builder: (state) {
       if (controller != null) {
         controller.attach(state);
