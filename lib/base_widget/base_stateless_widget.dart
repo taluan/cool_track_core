@@ -70,12 +70,12 @@ abstract class BaseStatelessWidget<C extends BaseCubit> extends StatelessWidget
 
   BaseStatelessWidget({super.key, this.title, this.createCubit});
 
-  C Function()? get initCubit => null;
+  C? initCubit() => null;
 
   C get cubit {
     // debugPrint("cubit: ${_cubit?.hashCode}");
     if (_cubit != null && _cubit?.isClosed != true) return _cubit!;
-    _cubit = createCubit?.call() ?? initCubit?.call() ?? EmptyCubit() as C;
+    _cubit = createCubit?.call() ?? initCubit() ?? EmptyCubit() as C;
     return _cubit!;
   }
 
@@ -94,34 +94,38 @@ abstract class BaseStatelessWidget<C extends BaseCubit> extends StatelessWidget
           //     "create bloc provider: $runtimeType - ${context.hashCode}");
           return cubit..initContext(ctx);
         },
-        child: appBuilderWidget(context),
+        child: Builder(
+            builder: (context) {
+              _cubit ??= context.watch<C>();
+              debugPrint("Rebuild stateless: $runtimeType");
+              return AppBaseWidget<C>(
+                backgroundColor: backgroundColor,
+                appBarBuilder: _createAppBar,
+                bodyBuilder: (ctx) => body(ctx),
+                loadingBuilder: (isLoading) => loadingWidget(isLoading),
+                extendBodyBehindAppBar: extendBodyBehindAppBar,
+                resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+                overlayViewsBuilder: () => overlayViews,
+                floatingButtonBuilder: () => floatingButton,
+                bottomBarViewBuilder: () => bottomBarView,
+                bottomSheetBuilder: () => bottomSheet,
+              );
+            }
+        ),
       ),
     );
   }
 
-  Widget Function(BuildContext) get appBuilderWidget => (context) {
-        return AppBaseWidget<C>(
-          backgroundColor: backgroundColor,
-          appBarBuilder: _createAppBar,
-          bodyBuilder: (ctx) => body(ctx),
-          loadingBuilder: (isLoading) => loadingWidget(isLoading),
-          extendBodyBehindAppBar: extendBodyBehindAppBar,
-          resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-          overlayViewsBuilder: () => overlayViews,
-          floatingButtonBuilder: () => floatingButton,
-          bottomBarViewBuilder: () => bottomBarView,
-          bottomSheetBuilder: () => bottomSheet,
-        );
-      };
 
-  String? get appBarTitle => title;
+  String? appBarTitle() => title;
 
   PreferredSizeWidget? _createAppBar(BuildContext context) {
     PreferredSizeWidget? custom = customAppBar(context);
     if (custom != null) {
       return custom;
     }
-    if (appBarTitle == null) {
+    final header = this.title ?? appBarTitle();
+    if (header == null) {
       return null;
     }
     List<Widget> actions = actionButton(context) ?? [];
@@ -130,7 +134,7 @@ abstract class BaseStatelessWidget<C extends BaseCubit> extends StatelessWidget
     ));
     return AppbarDefault(
       context: context,
-      title: appBarTitle,
+      title: header,
       elevation: appBarElevation,
       enableBackButton: enableBackButton,
       onBackAction: () {

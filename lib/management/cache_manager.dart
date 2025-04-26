@@ -60,7 +60,7 @@ class CacheManager {
         Map<String, dynamic>? json = jsonDecode(body);
         if (json != null) {
           final serverResponse = ServerResponse.parseJson(json, target);
-          if (serverResponse.code == 200 && serverResponse.data != null) {
+          if (serverResponse.success && serverResponse.data != null) {
             return serverResponse;
           }
         }
@@ -79,7 +79,7 @@ class CacheManager {
         Map<String, dynamic>? json = jsonDecode(body);
         if (json != null) {
           final serverResponse = ServerResponseArray.parseJson(json, target);
-          if (serverResponse.code == 200 && serverResponse.datas.isNotEmpty) {
+          if (serverResponse.isSuccess && serverResponse.datas.isNotEmpty) {
             return serverResponse;
           }
         }

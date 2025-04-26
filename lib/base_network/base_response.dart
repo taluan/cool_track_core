@@ -6,58 +6,71 @@ import '../utils/helper_utils.dart';
 
 typedef SuccessHandler<T> = Function(T? data);
 //Error Function return Error code and message
-typedef ErrorHandler = Function(int code, String msg);
+typedef ErrorHandler = Function(int, String?);
+
+List<T> listJsonToListObject<T>(
+    List<dynamic>? listItem, T Function(Map<String, dynamic>) instance) {
+  if (listItem == null) {
+    return [];
+  }
+  return listItem.map((e) => instance(e)).toList();
+}
 
 class ServerResponse<T> {
-  final int code;
+  final bool success;
   final int errorCode;
-  final String message;
+  final String? message;
   final T? data;
+  bool get isSuccess => success;
   Future<bool> onCompleted({required SuccessHandler<T> success, ErrorHandler? error}) async {
-    if (code >= 200 && code < 300) {
+    if (isSuccess) {
       await success(data);
       if (data is bool) {
         return data as bool;
       }
       return true;
     } else if (error != null) {
-      await error(code, message);
+      await error(errorCode, message);
     }
     return false;
   }
 
+  Future<void> onError(ErrorHandler error) async {
+    await error(errorCode, message);
+  }
+
   ServerResponse(
-      {required this.code, this.errorCode = 0, required this.message, this.data});
+      {this.success = false, this.errorCode = 0, required this.message, this.data});
 
   factory ServerResponse.parseJson(json, T Function(Map<String, dynamic>)? instance) {
     try {
-      var code = json["statusCode"] ?? json["status_code"] ?? json["error_code"] ?? 0;
-      var errorCode = json["errorCode"] ?? 0;
-      var msg = json["error_message"] ?? json["errorMessage"] ?? json["message"] ?? "";
-      var data = json['data'];
+      final success = json["Success"] ?? false;
+      final errorCode = json["ErrorCode"] ?? 0;
+      final msg = json["UserMessage"] ?? json["DevMessage"];
+      final data = json['Data'];
       if (instance != null && data != null) {
         if (data is Map<String, dynamic>) {
           return ServerResponse(
-              code: code,
+              success: success,
               errorCode: errorCode,
               message: msg,
               data: (data.isNotEmpty ? instance(data) : null));
         } else {
           return ServerResponse(
-              code: 500,
+              success: success,
               errorCode: errorCode,
-              message: "Kiểu dữ liệu không đúng: ${data.toString()}",
+              message: msg ?? "Kiểu dữ liệu không đúng: ${data.toString()}",
               data: null);
         }
       } else {
         return ServerResponse(
-            code: code,
+            success: false,
             errorCode: errorCode, message: msg, data: data);
       }
     } catch (e, s) {
       debugPrint(s.toString());
       return ServerResponse(
-          code: 500,
+          success: false,
           message:
           "Parse object ${instance?.runtimeType} error: ${e.toString()}",
           data: null);
@@ -93,46 +106,52 @@ class PaginationModel {
 
 
 class ServerResponseArray<T> {
-  final int code;
+  final bool success;
   final int errorCode;
-  final String message;
+  final String? message;
   final List<T> datas;
   final PaginationModel? pagination;
 
+  bool get isSuccess => success;
   Future<bool> onCompleted(
       {required Function(List<T>) success, ErrorHandler? error}) async {
-    if (code >= 200 && code < 300) {
+    if (isSuccess) {
       await success(datas);
       return true;
     } else if (error != null) {
-      await error(code, message);
+      await error(errorCode, message);
     }
     return false;
   }
 
+  Future<void> onError(ErrorHandler error) async {
+    await error(errorCode, message);
+  }
+
   ServerResponseArray(
-      {required this.code, this.errorCode = 0,
+      {this.success = false, this.errorCode = 0,
         required this.message,
         this.datas = const [], this.pagination});
 
   factory ServerResponseArray.parseJson(
       json, T Function(Map<String, dynamic>)? instance) {
-    var code = json["statusCode"] ?? json["status_code"] ?? json["error_code"] ?? 0;
-    var errorCode = json["errorCode"] ?? 0;
-    var msg = json["errorMessage"] ?? json["message"] ?? "";
-    final data = json['data'];
+
+    final success = json["Success"] ?? true;
+    final errorCode = json["ErrorCode"] ?? 0;
+    final msg = json["UserMessage"] ?? json["DevMessage"];
+    final data = json['Data'];
     try {
       if (instance != null) {
         if (data != null && data is List<dynamic>) {
           final datas = listJsonToListObject(
               data, instance); //target.arrayFromJson(result);
           return ServerResponseArray(
-              code: code,
+              success: success,
               errorCode: errorCode,  message: msg, datas: datas, pagination: json["pagination"] != null ? PaginationModel.fromJson(json["pagination"]) : null);
         } else if (data is Map<String, dynamic>) {
           final items = data["items"];
           return ServerResponseArray(
-            code: code,
+              success: success,
               errorCode: errorCode,
             message: msg,
             datas: (items is List<dynamic>
@@ -141,7 +160,7 @@ class ServerResponseArray<T> {
           );
         } else {
           return ServerResponseArray(
-            code: code,
+            success: success,
             errorCode: errorCode,
             message: msg,
             datas: listJsonToListObject([], instance),
@@ -149,7 +168,7 @@ class ServerResponseArray<T> {
         }
       } else {
         return ServerResponseArray(
-          code: code,
+            success: success,
             errorCode: errorCode,
           message: msg,
           datas: data is List<dynamic> ? data : data["Items"],
@@ -159,7 +178,7 @@ class ServerResponseArray<T> {
     } catch (e, s) {
       debugPrint(s.toString());
       return ServerResponseArray(
-          code: 500, message: "Parse object ${instance.runtimeType} error: ${e.toString()}", datas: []);
+          errorCode: 500, message: "Parse object ${instance.runtimeType} error: ${e.toString()}", datas: []);
     }
   }
 }

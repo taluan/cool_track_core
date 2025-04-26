@@ -29,7 +29,15 @@ abstract class ApiRouter {
 
   String get queryParam {
     if (params != null && params!.isNotEmpty) {
-      return "?${Uri(queryParameters: params!.map((key, value) => MapEntry(key, value?.toString()))).query}";
+      final queryMap = <String, dynamic>{};
+      params!.forEach((key, value) {
+        if (value is List) {
+          queryMap[key] = value; // giữ nguyên list
+        } else {
+          queryMap[key] = value.toString();
+        }
+      });
+      return "?${Uri(queryParameters: queryMap).query}";
     }
     return "";
   }

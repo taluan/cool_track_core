@@ -288,14 +288,6 @@ double getAspectRatioFixHeight(
   return width0 / height;
 }
 
-List<T> listJsonToListObject<T>(
-    List<dynamic>? listItem, T Function(Map<String, dynamic>) instance) {
-  if (listItem == null) {
-    return [];
-  }
-  return listItem.map((e) => instance(e)).toList();
-}
-
 String formatNumber(
     {required dynamic value,
       int minDigits = 0,

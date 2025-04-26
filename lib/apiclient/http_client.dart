@@ -46,11 +46,11 @@ class HttpClient extends ApiClientRequest {
 
       final response = await _request(router);
       if (response.statusCode == 404) {
-        return ServerResponse(code: 404, message: msg_api_notfound);
+        return ServerResponse(errorCode: 404, message: msg_api_notfound);
       } else if (response.statusCode == 503) {
-        return ServerResponse(code: 503, message: '503 Service Temporarily Unavailable');
+        return ServerResponse(errorCode: 503, message: '503 Service Temporarily Unavailable');
       } else if (response.statusCode == 504) {
-        return ServerResponse(code: 504, message: '504 Gateway Timeout ERROR');
+        return ServerResponse(errorCode: 504, message: '504 Gateway Timeout ERROR');
       } else if (response.statusCode == 401 ) {
         //unauthorized token
         if (_handleService.isLoggedIn) {
@@ -65,7 +65,7 @@ class HttpClient extends ApiClientRequest {
             }
           }
           await _handleService.processExpiredToken();
-          return ServerResponse(code: 401, message: "");
+          return ServerResponse(errorCode: 401, message: "");
         }
       }
 
@@ -84,9 +84,9 @@ class HttpClient extends ApiClientRequest {
           final statusCode = json?['status_code'] ?? json?['statusCode'] ?? response.statusCode;
           final errorCode = json?['error_code'] ?? json?['errorCode'] ?? 0;
           final msg = _handleService.errorMessage(statusCode, errorCode) ?? json?["Message"] ?? json?["error_message"] ?? json?["errorMessage"] ?? json?["message"] ?? msg_server_error;
-          return ServerResponse(code: response.statusCode, message: msg);
+          return ServerResponse(errorCode: response.statusCode, message: msg);
         } else {
-          return ServerResponse(code: response.statusCode, message: "${response.reasonPhrase ?? msg_server_error}: ${response.reasonPhrase ?? msg_server_error}");
+          return ServerResponse(errorCode: response.statusCode, message: "${response.reasonPhrase ?? msg_server_error}: ${response.reasonPhrase ?? msg_server_error}");
         }
       }
     } catch (e, s) {
@@ -98,10 +98,10 @@ class HttpClient extends ApiClientRequest {
           return Future.delayed(const Duration(seconds: 3)).then((value) =>
               request(router: router, target: target, isCache: isCache));
         } else {
-          return ServerResponse(code: 500, message: e.message);
+          return ServerResponse(errorCode: 500, message: e.message);
         }
       }
-      return ServerResponse(code: 500, message: e.toString());
+      return ServerResponse(errorCode: 500, message: e.toString());
     }
   }
 
@@ -120,11 +120,11 @@ class HttpClient extends ApiClientRequest {
 
       final response = await _request(router);
       if (response.statusCode == 404) {
-        return ServerResponseArray(code: 404, message: msg_api_notfound);
+        return ServerResponseArray(errorCode: 404, message: msg_api_notfound);
       } else if (response.statusCode == 503) {
-        return ServerResponseArray(code: 503, message: '503 Service Temporarily Unavailable');
+        return ServerResponseArray(errorCode: 503, message: '503 Service Temporarily Unavailable');
       } else if (response.statusCode == 504) {
-        return ServerResponseArray(code: 504, message: '504 Gateway Timeout ERROR');
+        return ServerResponseArray(errorCode: 504, message: '504 Gateway Timeout ERROR');
       } else if (response.statusCode == 401 ) {
         //token expired
         //unauthorized token
@@ -141,7 +141,7 @@ class HttpClient extends ApiClientRequest {
             }
           }
           await _handleService.processExpiredToken();
-          return ServerResponseArray(code: 401, message: "");
+          return ServerResponseArray(errorCode: 401, message: "");
         }
       }
 
@@ -160,9 +160,9 @@ class HttpClient extends ApiClientRequest {
           final statusCode = json?['status_code'] ?? json?['statusCode'] ?? response.statusCode;
           final errorCode = json?['error_code'] ?? json?['errorCode'] ?? 0;
           final msg = _handleService.errorMessage(statusCode, errorCode) ?? json?["Message"] ?? json?["error_message"] ?? json?["errorMessage"] ?? json?["message"] ?? msg_server_error;
-          return ServerResponseArray(code: response.statusCode, message: msg);
+          return ServerResponseArray(errorCode: response.statusCode, message: msg);
         } else {
-          return ServerResponseArray(code: response.statusCode, message: "${response.reasonPhrase ?? msg_server_error}: ${response.reasonPhrase ?? msg_server_error}");
+          return ServerResponseArray(errorCode: response.statusCode, message: "${response.reasonPhrase ?? msg_server_error}: ${response.reasonPhrase ?? msg_server_error}");
         }
       }
     } catch (e, s) {
@@ -173,10 +173,10 @@ class HttpClient extends ApiClientRequest {
           return Future.delayed(const Duration(seconds: 3)).then((value) =>
               requestArray(router: router, target: target, isCache: isCache));
         } else {
-          return ServerResponseArray(code: 500, message: e.message);
+          return ServerResponseArray(errorCode: 500, message: e.message);
         }
       }
-      return ServerResponseArray(code: 500, message: e.toString());
+      return ServerResponseArray(errorCode: 500, message: e.toString());
     }
   }
 
@@ -225,11 +225,10 @@ class HttpClient extends ApiClientRequest {
     debugPrint("params: $params");
     final headers = await _handleService.requestHeaders();
     debugPrint("header: $headers");
-    LogApiModel logApiModel = LogApiModel(params: jsonEncode(params), header: jsonEncode(headers));
-    logApiModel.url = "${method.name} $url";
+    LogApiModel logApiModel = LogApiModel(url: url, method: method.name.toUpperCase(), params: jsonEncode(params), header: jsonEncode(headers));
     MemoryCached.instance.addApiLog(logApiModel);
     //log response =============================================================================
-    Response response;
+    late Response response;
     try {
       switch (method) {
         case Method.post: {
@@ -261,6 +260,7 @@ class HttpClient extends ApiClientRequest {
       debugPrint("status code: ${response.statusCode} - ${method.name}: ${api.path}");
       debugPrint("response: ${response.body}");
 
+      logApiModel.endRequestDate = DateTime.now();
       logApiModel.statusCode = response.statusCode;
       if (response.body.isEmpty) {
         logApiModel.response = response.reasonPhrase ?? response.body;
@@ -269,9 +269,11 @@ class HttpClient extends ApiClientRequest {
       }
       return response;
     } catch (e, s) {
-      logApiModel.response = e.toString();
       debugPrint("error: ${s.toString()}");
       debugPrint("error: ${e.toString()}");
+      logApiModel.response = e.toString();
+      logApiModel.endRequestDate = DateTime.now();
+      logApiModel.statusCode = response.statusCode;
       rethrow;
     } finally {
       client.close();
@@ -279,11 +281,12 @@ class HttpClient extends ApiClientRequest {
   }
 
   Future<Response> _upload(ApiRouter api) async {
-    LogApiModel logApiModel = LogApiModel();
+    final methodName = api.method.name.toUpperCase();
+    LogApiModel logApiModel = LogApiModel(method: methodName);
     try {
       final url = api.path.startsWith("http") ? api.path : rootUrl + api.path;
-      logApiModel.url = "${api.method.name} $url";
-      final request = MultipartRequest(api.method.name.toUpperCase(), Uri.parse(url));
+      logApiModel.url = url;
+      final request = MultipartRequest(methodName, Uri.parse(url));
       final uploadFiles = api.files;
       if (uploadFiles != null && uploadFiles.isNotEmpty) {
         for (var key in uploadFiles.keys) {
@@ -351,6 +354,7 @@ class HttpClient extends ApiClientRequest {
       var response = await Response.fromStream(streamedResponse);
       debugPrint("status code: ${response.statusCode} - ${api.method.name}: ${api.path}");
       debugPrint("response upload: ${response.body}");
+      logApiModel.endRequestDate = DateTime.now();
       logApiModel.statusCode = response.statusCode;
       if (response.body.isEmpty) {
         logApiModel.response = response.reasonPhrase ?? response.body;
@@ -359,9 +363,11 @@ class HttpClient extends ApiClientRequest {
       }
       return response;
     } catch (e, s) {
-      logApiModel.response = e.toString();
       debugPrint("error: ${s.toString()}");
       debugPrint("error: ${e.toString()}");
+      logApiModel.response = e.toString();
+      logApiModel.endRequestDate = DateTime.now();
+      logApiModel.statusCode = 500;
       rethrow;
     }
   }

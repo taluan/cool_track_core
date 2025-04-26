@@ -44,11 +44,11 @@ abstract class BaseCubit extends Cubit<bool> {
       _bsLoading.sink.add(false);
     }
   }
-  Future errorHandlerAndBack(int code, String msg) async {
+  Future errorHandlerAndBack(int code, String? msg) async {
     await errorHandler(code, msg, enableBack: true);
   }
 
-  Future errorHandler(int code, String msg, {bool enableBack = false}) async {
+  Future errorHandler(int code, String? msg, {bool enableBack = false}) async {
     if (isClosed) return;
     hideLoading();
     await showError(message: msg, enableBack: enableBack);
