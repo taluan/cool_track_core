@@ -64,8 +64,6 @@ class DatePickerSelectField extends StatefulWidget {
 
 class _DatePickerSelectFieldState extends State<DatePickerSelectField> {
   DateTime? selectedDate;
-  late DateTime firstDate;
-  late DateTime lastDate;
   late TextEditingController _editingController;
 
   @override
@@ -78,8 +76,6 @@ class _DatePickerSelectFieldState extends State<DatePickerSelectField> {
       selectedDate = widget.selectedDate;
     }
     _editingController = TextEditingController(text: _dateString());
-    firstDate = widget.minDate ?? DateTime(DateTime.now().year - 5);
-    lastDate = widget.maxDate ?? DateTime(DateTime.now().year + 5);
   }
 
   void onChangeListener() {
@@ -141,6 +137,16 @@ class _DatePickerSelectFieldState extends State<DatePickerSelectField> {
   }
 
   void _showCalendarPicker() async {
+    DateTime firstDate = widget.minDate ?? DateTime(DateTime.now().year - 5);
+    DateTime lastDate = widget.maxDate ?? DateTime(DateTime.now().year + 5);
+    if (selectedDate != null) {
+      if (selectedDate!.isBefore(firstDate)) {
+        selectedDate = firstDate;
+      }
+      if (selectedDate!.isAfter(lastDate)) {
+        selectedDate = lastDate;
+      }
+    }
     DateTime? value = await showDatePicker(
         context: context,
         // locale: localizationManager.getCurrentLocale(),
@@ -167,6 +173,16 @@ class _DatePickerSelectFieldState extends State<DatePickerSelectField> {
   }
 
   void _showDatePicker() {
+    DateTime firstDate = widget.minDate ?? DateTime(DateTime.now().year - 5);
+    DateTime lastDate = widget.maxDate ?? DateTime(DateTime.now().year + 5);
+    if (selectedDate != null) {
+      if (selectedDate!.isBefore(firstDate)) {
+        selectedDate = firstDate;
+      }
+      if (selectedDate!.isAfter(lastDate)) {
+        selectedDate = lastDate;
+      }
+    }
     DatePicker.showDatePicker(context,
         dateFormat: widget.dateFormat,
         initialDateTime: selectedDate ??
@@ -191,6 +207,16 @@ class _DatePickerSelectFieldState extends State<DatePickerSelectField> {
   }
 
   void _showDateTimePicker() async {
+    DateTime firstDate = widget.minDate ?? DateTime(DateTime.now().year - 5);
+    DateTime lastDate = widget.maxDate ?? DateTime(DateTime.now().year + 5);
+    if (selectedDate != null) {
+      if (selectedDate!.isBefore(firstDate)) {
+        selectedDate = firstDate;
+      }
+      if (selectedDate!.isAfter(lastDate)) {
+        selectedDate = lastDate;
+      }
+    }
     DateTime? value = await DateTimePickerBottomSheet.show(context,
         selectedDate: selectedDate ?? DateTime.now(),
         minimumDate: firstDate,

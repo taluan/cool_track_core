@@ -120,21 +120,52 @@ class _DropDownSelectionBottomSheetState<T extends KeyValueObject >
           ),
           height: 4,
           width: 60.sp,
-          margin: const EdgeInsets.only(top: 8, bottom: 12),
+          margin: const EdgeInsets.only(top: 5, bottom: 5),
         ),
-        Row(
-          children: [
-            const SizedBox(width: 12,),
-            Expanded(child: Text(widget.title, style: context.textTheme.titleLarge?.copyWith(fontSize: 16, fontWeight: FontWeight.w600),)),
-            IconButton(onPressed: () {
-              Navigator.of(context).pop();
-            }, icon: const Icon(Icons.close, size: 22,))
-          ],
+        Container(
+          height: AppConst.navigationBarHeight,
+          color: Colors.white,
+          child: Row(
+            children: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    S.current.cancel,
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: Colors.grey),
+                  )),
+              Expanded(
+                  child: Text(
+                    widget.title, maxLines: 1, overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                    textAlign: TextAlign.center,
+                  )),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(selected);
+                    // print("toch back ${selectedDate}");
+                  },
+                  child: Text(
+                    S.current.done,
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                  )),
+            ],
+          ),
+        ),
+        const Divider(
+          height: 1,
         ),
         // const Divider(),
         if (widget.datas.length > 10)
-          _searchWidget(
-            context,
+          SearchBarTextField(
+            margin: const EdgeInsets.only(left: 12, top: 10, right: 12),
+            autofocus: false,
+            editingController: searchController,
+            onChanged: _search,
+            onClear: () {
+              listDataStream.value = widget.datas;
+            },
           ),
         Expanded(
           child: StreamBuilder<bool?>(
@@ -193,45 +224,31 @@ class _DropDownSelectionBottomSheetState<T extends KeyValueObject >
             }
           ),
         ),
-        if (widget.multiSelect && listDataStream.valueOrNull?.isNotEmpty == true)
-          SafeArea(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(selected);
-                  },
-                  style: TextButton.styleFrom(
-                    visualDensity: const VisualDensity(vertical: -1),
-
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppConst.textFieldBorderRadius)),
-                    minimumSize: Size(220.w, 48),
-                  ),
-                  child: Text(S.current.done,
-                      style: context.textTheme.titleLarge),
-                )
-              ],
-            ),
-          )
+        // if (widget.multiSelect && listDataStream.valueOrNull?.isNotEmpty == true)
+        //   SafeArea(
+        //     child: Row(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [
+        //         TextButton(
+        //           onPressed: () {
+        //             Navigator.of(context).pop(selected);
+        //           },
+        //           style: TextButton.styleFrom(
+        //             visualDensity: const VisualDensity(vertical: -1),
+        //
+        //             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppConst.textFieldBorderRadius)),
+        //             minimumSize: Size(220.w, 48),
+        //           ),
+        //           child: Text(S.current.done,
+        //               style: context.textTheme.titleLarge),
+        //         )
+        //       ],
+        //     ),
+        //   )
       ],
     );
   }
 
-  Container _searchWidget(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: SearchBarTextField(
-        margin: const EdgeInsets.all(0),
-        autofocus: false,
-        editingController: searchController,
-        onChanged: _search,
-        onClear: () {
-          listDataStream.value = widget.datas;
-        },
-      ),
-    );
-  }
 
   void _search(String queryString) {
     searchOnChange?.add(queryString);

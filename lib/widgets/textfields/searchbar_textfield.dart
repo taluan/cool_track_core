@@ -29,7 +29,7 @@ class SearchBarTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final border = OutlineInputBorder(
       borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-      borderSide: BorderSide(color: borderColor ?? Colors.white, width: 1.0),
+      borderSide: BorderSide(color: borderColor ?? Colors.grey, width: 1.0),
     );
     return Container(
       margin: margin ?? const EdgeInsets.only(

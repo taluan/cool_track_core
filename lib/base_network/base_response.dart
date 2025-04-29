@@ -16,12 +16,15 @@ List<T> listJsonToListObject<T>(
   return listItem.map((e) => instance(e)).toList();
 }
 
-class ServerResponse<T> {
-  final bool success;
-  final int errorCode;
-  final String? message;
-  final T? data;
+abstract class BaseServerResponse<T> {
+  late final bool success;
+  late final int errorCode;
+  late final String? message;
+  late final T? data;
   bool get isSuccess => success;
+
+  BaseServerResponse({this.success = false, this.errorCode = 0, required this.message, this.data});
+
   Future<bool> onCompleted({required SuccessHandler<T> success, ErrorHandler? error}) async {
     if (isSuccess) {
       await success(data);
@@ -38,9 +41,12 @@ class ServerResponse<T> {
   Future<void> onError(ErrorHandler error) async {
     await error(errorCode, message);
   }
+}
+
+class ServerResponse<T> extends BaseServerResponse<T> {
 
   ServerResponse(
-      {this.success = false, this.errorCode = 0, required this.message, this.data});
+      {super.success = false, super.errorCode = 0, required super.message, super.data});
 
   factory ServerResponse.parseJson(json, T Function(Map<String, dynamic>)? instance) {
     try {
@@ -105,33 +111,15 @@ class PaginationModel {
 }
 
 
-class ServerResponseArray<T> {
-  final bool success;
-  final int errorCode;
-  final String? message;
-  final List<T> datas;
+class ServerResponseArray<T> extends BaseServerResponse<List<T>> {
+
+  List<T> get datas => data ?? [];
   final PaginationModel? pagination;
 
-  bool get isSuccess => success;
-  Future<bool> onCompleted(
-      {required Function(List<T>) success, ErrorHandler? error}) async {
-    if (isSuccess) {
-      await success(datas);
-      return true;
-    } else if (error != null) {
-      await error(errorCode, message);
-    }
-    return false;
-  }
-
-  Future<void> onError(ErrorHandler error) async {
-    await error(errorCode, message);
-  }
-
   ServerResponseArray(
-      {this.success = false, this.errorCode = 0,
-        required this.message,
-        this.datas = const [], this.pagination});
+      {super.success = false, super.errorCode = 0,
+        required super.message,
+        super.data = const [], this.pagination});
 
   factory ServerResponseArray.parseJson(
       json, T Function(Map<String, dynamic>)? instance) {
@@ -147,14 +135,14 @@ class ServerResponseArray<T> {
               data, instance); //target.arrayFromJson(result);
           return ServerResponseArray(
               success: success,
-              errorCode: errorCode,  message: msg, datas: datas, pagination: json["pagination"] != null ? PaginationModel.fromJson(json["pagination"]) : null);
+              errorCode: errorCode,  message: msg, data: datas, pagination: json["pagination"] != null ? PaginationModel.fromJson(json["pagination"]) : null);
         } else if (data is Map<String, dynamic>) {
           final items = data["items"];
           return ServerResponseArray(
               success: success,
               errorCode: errorCode,
             message: msg,
-            datas: (items is List<dynamic>
+            data: (items is List<dynamic>
                 ? listJsonToListObject(items, instance)
                 : listJsonToListObject([], instance)), pagination: json["pagination"] != null ? PaginationModel.fromJson(json["pagination"]) : null
           );
@@ -163,7 +151,7 @@ class ServerResponseArray<T> {
             success: success,
             errorCode: errorCode,
             message: msg,
-            datas: listJsonToListObject([], instance),
+            data: listJsonToListObject([], instance),
           );
         }
       } else {
@@ -171,14 +159,14 @@ class ServerResponseArray<T> {
             success: success,
             errorCode: errorCode,
           message: msg,
-          datas: data is List<dynamic> ? data : data["Items"],
+          data: data is List<dynamic> ? data : data["Items"],
             pagination: json["pagination"] != null ? PaginationModel.fromJson(json["pagination"]) : null
         );
       }
     } catch (e, s) {
       debugPrint(s.toString());
       return ServerResponseArray(
-          errorCode: 500, message: "Parse object ${instance.runtimeType} error: ${e.toString()}", datas: []);
+          errorCode: 500, message: "Parse object ${instance.runtimeType} error: ${e.toString()}", data: []);
     }
   }
 }

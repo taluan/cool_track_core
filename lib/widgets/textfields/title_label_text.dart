@@ -21,10 +21,10 @@ class TitleLabelText extends StatelessWidget {
             if (required == true)
               TextSpan(
                 text: ' *',
-                style: (labelStyle ?? context.textTheme.titleMedium)?.copyWith(color: Colors.red),
+                style: (labelStyle ?? context.textTheme.titleSmall)?.copyWith(color: Colors.red),
               ),
           ],
-          style: labelStyle ?? context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          style: labelStyle ?? context.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w400),
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,

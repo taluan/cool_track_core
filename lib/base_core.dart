@@ -20,6 +20,7 @@ export '../base_widget/base_stateless_widget.dart';
 
 import '../base_network/myhttp_overrides.dart';
 import 'base_network/api_client_request.dart';
+import 'generated/l10n.dart';
 import 'management/cache_manager.dart';
 
 final packageName = "base_code_flutter";
@@ -47,6 +48,7 @@ abstract mixin class AppCoreObserver {
 
 AppCoreConfig get appCoreConfig => AppCoreConfig();
 class AppCoreConfig {
+  static const AppLocalizationDelegate localizationsDelegate = S.delegate;
   static final AppCoreConfig _instance = AppCoreConfig._internal();
   factory AppCoreConfig() => _instance;
   AppCoreConfig._internal();

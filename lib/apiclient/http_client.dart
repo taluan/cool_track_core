@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:api_response_log/api_response_log.dart';
 import 'package:base_code_flutter/base_network/app_exception.dart';
 import 'package:base_code_flutter/flavor/flavor.dart';
 import 'package:base_code_flutter/management/cache_manager.dart';
-import 'package:base_code_flutter/model/log_api_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:path/path.dart' as pathFile;
@@ -226,7 +226,7 @@ class HttpClient extends ApiClientRequest {
     final headers = await _handleService.requestHeaders();
     debugPrint("header: $headers");
     LogApiModel logApiModel = LogApiModel(url: url, method: method.name.toUpperCase(), params: jsonEncode(params), header: jsonEncode(headers));
-    MemoryCached.instance.addApiLog(logApiModel);
+    ApiLog.addApiLog(logApiModel, enabled: AppFlavor.showLog);
     //log response =============================================================================
     late Response response;
     try {
@@ -343,7 +343,7 @@ class HttpClient extends ApiClientRequest {
       //add log ======================================
       logApiModel.params = jsonEncode(params);
       logApiModel.header = jsonEncode(request.headers);
-      MemoryCached.instance.addApiLog(logApiModel);
+      ApiLog.addApiLog(logApiModel, enabled: AppFlavor.showLog);
 
       debugPrint("URL ${api.method.name}: $url");
       debugPrint("params: $params");

@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../utils/app_const.dart';
 import '../base_core.dart';
@@ -84,6 +85,8 @@ extension ContextEX on BuildContext {
   ColorScheme get colorScheme => theme.colorScheme;
 
   bool get isTablet => screenUtil.screenWidth > 600;
+
+  C cubit<C>() => watch<C>();
 
   void dismissKeyboard() {
     FocusScope.of(this).unfocus();

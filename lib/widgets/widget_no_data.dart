@@ -24,13 +24,13 @@ class NoDataWidget extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        icon ?? Image.asset("assets/image/nodata.png", width: 250,),
+        icon ?? Image.asset("assets/images/nodata.png", width: 200,),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 27, vertical: 10),
           child: Text(
             desc ?? "Không có kết quả nào được tìm thấy",
             textAlign: TextAlign.center,
-            style: context.textTheme.bodyMedium,
+            style: context.textTheme.titleMedium,
           ),
         ),
         if (bottomWidgets != null)

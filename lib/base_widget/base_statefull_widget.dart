@@ -14,7 +14,7 @@ abstract class BaseTabbarView<C extends BaseCubit> extends StatelessWidget {
   C createCubit(BuildContext context);
   Widget body(BuildContext context);
 
-  C cubit(BuildContext context) => context.read<C>();
+  C cubitRead(BuildContext context) => context.read<C>();
   C cubitWatch(BuildContext context) => context.watch<C>();
 
 

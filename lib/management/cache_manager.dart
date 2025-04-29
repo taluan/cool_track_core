@@ -6,7 +6,6 @@ import 'package:hive/hive.dart';
 
 import '../base_network/base_response.dart';
 import '../flavor/flavor.dart';
-import '../model/log_api_model.dart';
 
 class CacheManager {
 
@@ -106,30 +105,4 @@ class CacheManager {
     }
   }
 
-}
-
-class MemoryCached {
-  MemoryCached._instance();
-  static final MemoryCached instance = MemoryCached._instance();
-  List<LogApiModel> logApis = [];
-  void addApiLog(LogApiModel log) {
-    if (AppFlavor.showLog) {
-      logApis.insert(0, log);
-      if (logApis.length > 50) {
-        logApis.removeRange(50, logApis.length);
-      }
-    }
-  }
-  void addLog({required String url, String? header, String? param, String? response, int statusCode = 200}) {
-    try {
-      if (AppFlavor.showLog) {
-        LogApiModel logApiModel = LogApiModel(
-            url: url,
-            params: param ?? "", header: header ?? "");
-        logApiModel.response = response ?? "";
-        logApiModel.statusCode = statusCode;
-        addApiLog(logApiModel);
-      }
-    }catch(_) {}
-  }
 }
