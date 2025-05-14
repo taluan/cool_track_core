@@ -180,7 +180,7 @@ class AppBaseWidget<C extends BaseCubit> extends StatelessWidget {
     return BlocBuilder<C, bool>(
       bloc: cubit,
       builder: (context, data) {
-        debugPrint("ReloadUI: $data");
+        debugPrint("ReloadUI $runtimeType: $data");
         final overlays = overlayViewsBuilder();
         return Scaffold(
           appBar: appBarBuilder(context),

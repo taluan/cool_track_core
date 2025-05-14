@@ -38,7 +38,7 @@ abstract class BaseTabbarView<C extends BaseCubit> extends StatelessWidget {
                   BlocBuilder<C, bool>(
                       bloc: cubit,
                       builder: (context, data) {
-                        debugPrint("BaseTabbarView reload: $runtimeType");
+                        // debugPrint("BaseTabbarView reload: $runtimeType");
                         return body(context);
                       }
                   ),

@@ -269,7 +269,7 @@ class HttpClient extends ApiClientRequest {
       }
       return response;
     } catch (e, s) {
-      debugPrint("error: ${s.toString()}");
+      debugPrint(s.toString());
       debugPrint("error: ${e.toString()}");
       logApiModel.response = e.toString();
       logApiModel.endRequestDate = DateTime.now();

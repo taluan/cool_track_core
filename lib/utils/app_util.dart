@@ -20,6 +20,9 @@ class AppUtil {
 
   PackageInfo? get appInfo => _appInfo;
 
+  Future<void> loadData() async {
+    await Future.wait([getDeviceInfo(), getAppInfo()]);
+  }
 
   Future<String?> getDeviceId() async {
     if (_deviceId == null) {

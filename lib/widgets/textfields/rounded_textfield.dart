@@ -36,6 +36,7 @@ class RoundedTextField extends StatelessWidget {
   final int? maxLength;
   final GestureTapCallback? onTap;
   final ValueChanged<String>? onFieldSubmitted;
+  final Iterable<String>? autofillHints;
   const RoundedTextField(
       {super.key,
       this.initialValue,
@@ -67,7 +68,8 @@ class RoundedTextField extends StatelessWidget {
       this.maxLength,
       this.enabled = true,
       this.onTap,
-        this.onFieldSubmitted
+        this.onFieldSubmitted,
+        this.autofillHints
       });
 
   @override
@@ -77,6 +79,7 @@ class RoundedTextField extends StatelessWidget {
       padding: margin ?? EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
           if ((labelText ?? '').isNotEmpty)
             TitleLabelText(labelText: labelText, labelStyle: labelStyle, required: required,),
@@ -92,6 +95,7 @@ class RoundedTextField extends StatelessWidget {
               }
             } : null),
             obscureText: obscureText ?? false,
+            autofillHints: autofillHints,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             readOnly: readOnly,
             minLines: minLines,
