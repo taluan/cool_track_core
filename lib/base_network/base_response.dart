@@ -85,41 +85,15 @@ class ServerResponse<T> extends BaseServerResponse<T> {
   }
 }
 
-class PaginationModel {
-  int totalRows = 0;
-  int pageIndex = 0;
-  int pageSize = 0;
-  int totalPage = 0;
-
-  PaginationModel();
-
-  PaginationModel.fromJson(Map<String, dynamic> json) {
-    totalRows = parseInt(json['totalRows']);
-    pageIndex = parseInt(json['pageIndex']);
-    pageSize = parseInt(json['pageSize']);
-    totalPage = parseInt(json['totalPage']);
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['totalRows'] = totalRows;
-    data['pageIndex'] = pageIndex;
-    data['pageSize'] = pageSize;
-    data['totalPage'] = totalPage;
-    return data;
-  }
-}
-
 
 class ServerResponseArray<T> extends BaseServerResponse<List<T>> {
 
   List<T> get datas => data ?? [];
-  final PaginationModel? pagination;
 
   ServerResponseArray(
       {super.success = false, super.errorCode = 0,
         required super.message,
-        super.data = const [], this.pagination});
+        super.data = const []});
 
   factory ServerResponseArray.parseJson(
       json, T Function(Map<String, dynamic>)? instance) {
@@ -135,16 +109,16 @@ class ServerResponseArray<T> extends BaseServerResponse<List<T>> {
               data, instance); //target.arrayFromJson(result);
           return ServerResponseArray(
               success: success,
-              errorCode: errorCode,  message: msg, data: datas, pagination: json["pagination"] != null ? PaginationModel.fromJson(json["pagination"]) : null);
+              errorCode: errorCode,  message: msg, data: datas);
         } else if (data is Map<String, dynamic>) {
-          final items = data["items"];
+          final items = data["PageData"];
           return ServerResponseArray(
               success: success,
               errorCode: errorCode,
             message: msg,
             data: (items is List<dynamic>
                 ? listJsonToListObject(items, instance)
-                : listJsonToListObject([], instance)), pagination: json["pagination"] != null ? PaginationModel.fromJson(json["pagination"]) : null
+                : listJsonToListObject([], instance))
           );
         } else {
           return ServerResponseArray(
@@ -160,7 +134,6 @@ class ServerResponseArray<T> extends BaseServerResponse<List<T>> {
             errorCode: errorCode,
           message: msg,
           data: data is List<dynamic> ? data : data["Items"],
-            pagination: json["pagination"] != null ? PaginationModel.fromJson(json["pagination"]) : null
         );
       }
     } catch (e, s) {

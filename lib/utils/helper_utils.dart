@@ -28,6 +28,9 @@ extension DateTimeEx on DateTime {
 
   String? get toUtcString => toUtc().toIso8601String();
 
+  DateTime get endOfDay => DateTime(this.year, this.month, this.day + 1)
+      .subtract(const Duration(milliseconds: 1));
+
   String? formatString({String dateFormat = AppConst.dateFormat}) {
     try {
       return DateFormat(dateFormat).format(this);

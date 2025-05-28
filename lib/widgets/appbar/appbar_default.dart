@@ -7,15 +7,17 @@ class AppbarDefault extends AppBar {
       {super.key,
       required BuildContext context,
       super.flexibleSpace,
+        Widget? titleWidget,
       String? title,
       double? elevation,
+        Widget? leading,
       bool enableBackButton = true,
       VoidCallback? onBackAction,
       super.actions,
       PreferredSizeWidget? bottomAppBar})
       : super(
-          title: Text(
-            title ?? "",
+          title: titleWidget ?? Text(
+            title?.toUpperCase() ?? "",
             maxLines: 2,
             textAlign: TextAlign.center,
           ),
@@ -24,14 +26,14 @@ class AppbarDefault extends AppBar {
           elevation: elevation ?? 1,
           scrolledUnderElevation: elevation ?? 1,
           shadowColor: Colors.black12,
-          leading: !enableBackButton
+          leading: leading ?? (!enableBackButton
               ? const SizedBox()
               : IconButton(
                   onPressed: onBackAction ??
                       () {
                         Navigator.of(context).pop();
                       },
-                  icon: Image.asset("assets/images/back_icon.png", width: 26)),
+                  icon: Image.asset("assets/images/back_icon.png", width: 26))),
           backgroundColor: Colors.white,
           surfaceTintColor: Colors.white,
           bottom: bottomAppBar,
