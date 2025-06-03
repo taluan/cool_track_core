@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 
+import '../base_core.dart';
 import '../base_cubit/base_cubit.dart';
 import '../widgets/appbar/appbar_default.dart';
 
@@ -137,6 +138,12 @@ abstract class BaseStatelessWidget<C extends BaseCubit> extends StatelessWidget
       title: header,
       elevation: appBarElevation,
       enableBackButton: enableBackButton,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          // borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+          gradient: appCoreConfig.config?.appBarGradient,
+        ),
+      ),
       onBackAction: () {
         onBackAction(context);
       },

@@ -185,6 +185,9 @@ String convertStringUtcToStringLocal(String? utcString, {String dateFormat = App
 DateTime? convertStringToDate(String? dateString, String dateFormat) {
   if (dateString != null && dateString.isNotEmpty) {
     try {
+      if (dateFormat.isEmpty) {
+        return DateTime.parse(dateString);
+      }
       var string = dateString;
       if (dateFormat.length > string.length) {
         string = dateString.substring(0, dateFormat.length);

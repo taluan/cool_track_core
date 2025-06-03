@@ -13,9 +13,14 @@ class FlavorValue {
 mixin AppFlavor {
   static late FlavorType _type;
   static late FlavorValue _value;
+  static bool? _enabledLog;
 
   static bool get showLog {
     return _value.showLog;
+  }
+
+  static bool get enabledLog {
+    return _enabledLog ?? false;
   }
 
   static void updateRootUrl(String url) {
@@ -46,8 +51,9 @@ mixin AppFlavor {
     return _value.appName;
   }
 
-  static void loadConfig({FlavorType flavorType = FlavorType.pro, required FlavorValue value}) {
+  static void loadConfig({FlavorType flavorType = FlavorType.pro, required FlavorValue value, bool? enabledLog}) {
     _type = flavorType;
     _value = value;
+    _enabledLog = enabledLog;
   }
 }

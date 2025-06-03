@@ -19,6 +19,7 @@ export '../base_widget/base_statefull_widget.dart';
 export '../base_widget/base_stateless_widget.dart';
 
 import '../base_network/myhttp_overrides.dart';
+import 'app_config.dart';
 import 'base_network/api_client_request.dart';
 import 'generated/l10n.dart';
 import 'management/cache_manager.dart';
@@ -44,6 +45,7 @@ abstract mixin class AppCoreObserver {
     AlertType alertType = AlertType.inform,
   });
 
+  AppConfig? get config;
 }
 
 AppCoreConfig get appCoreConfig => AppCoreConfig();
@@ -95,4 +97,6 @@ class AppCoreConfig {
       return AlertWidgetPage.show(context: context ?? navigatorKey.currentContext!, title: title, message: message, closeTitle: closeTitle, alertType: AlertType.inform);
     }
   }
+
+  AppConfig? get config => _observer?.config;
 }

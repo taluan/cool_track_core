@@ -19,7 +19,7 @@ class AppbarDefault extends AppBar {
           title: titleWidget ?? Text(
             title?.toUpperCase() ?? "",
             maxLines: 2,
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.center, style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
           titleSpacing: -10,
@@ -33,7 +33,7 @@ class AppbarDefault extends AppBar {
                       () {
                         Navigator.of(context).pop();
                       },
-                  icon: Image.asset("assets/images/back_icon.png", width: 26))),
+                  icon: Image.asset("assets/images/back_icon.png", width: 26, color: Colors.white,))),
           backgroundColor: Colors.white,
           surfaceTintColor: Colors.white,
           bottom: bottomAppBar,

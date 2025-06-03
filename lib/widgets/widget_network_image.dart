@@ -45,8 +45,8 @@ class NetworkLoadImage extends StatelessWidget {
               width: width,
               height: height,
               child: const Icon(
-                Icons.image,
-                color: Colors.grey,
+                Icons.image_outlined,
+                color: Colors.grey, size: 30,
               ),
             )
           : CachedNetworkImage(
