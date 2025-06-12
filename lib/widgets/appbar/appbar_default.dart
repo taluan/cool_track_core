@@ -13,6 +13,7 @@ class AppbarDefault extends AppBar {
         Widget? leading,
       bool enableBackButton = true,
       VoidCallback? onBackAction,
+        super.centerTitle,
       super.actions,
       PreferredSizeWidget? bottomAppBar})
       : super(
@@ -21,7 +22,6 @@ class AppbarDefault extends AppBar {
             maxLines: 2,
             textAlign: TextAlign.center, style: TextStyle(color: Colors.white),
           ),
-          centerTitle: true,
           titleSpacing: -10,
           elevation: elevation ?? 1,
           scrolledUnderElevation: elevation ?? 1,

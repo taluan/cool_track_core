@@ -17,6 +17,8 @@ mixin BaseStateContent<C extends BaseCubit> on StatelessWidget {
 
   bool get enableBackButton => true;
 
+  bool? get centerTitle => true;
+
   bool get extendBodyBehindAppBar => false;
 
   Widget? get bottomSheet => null;
@@ -136,6 +138,7 @@ abstract class BaseStatelessWidget<C extends BaseCubit> extends StatelessWidget
     return AppbarDefault(
       context: context,
       title: header,
+      centerTitle: centerTitle,
       elevation: appBarElevation,
       enableBackButton: enableBackButton,
       flexibleSpace: Container(

@@ -6,6 +6,7 @@ import 'package:api_response_log/api_response_log.dart';
 import 'package:base_code_flutter/base_network/app_exception.dart';
 import 'package:base_code_flutter/flavor/flavor.dart';
 import 'package:base_code_flutter/management/cache_manager.dart';
+import 'package:base_code_flutter/model/pagedata_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:path/path.dart' as pathFile;
@@ -180,6 +181,10 @@ class HttpClient extends ApiClientRequest {
     }
   }
 
+  @override
+  Future<ServerResponse<PageDataModel<T>>> requestDataPaging<T>({required ApiRouter router, required T Function(Map<String, dynamic> json)? target}) {
+    return request(router: router, target: (json) => PageDataModel.fromJson(json, target));
+  }
 
   ///
   /// implement refresh token
@@ -240,6 +245,12 @@ class HttpClient extends ApiClientRequest {
         case Method.put: {
           response = await client
               .put(Uri.parse(url),
+              headers: headers, body: jsonEncode(params));
+          break;
+        }
+        case Method.patch: {
+          response = await client
+              .patch(Uri.parse(url),
               headers: headers, body: jsonEncode(params));
           break;
         }
@@ -371,5 +382,7 @@ class HttpClient extends ApiClientRequest {
       rethrow;
     }
   }
+
+
 
 }

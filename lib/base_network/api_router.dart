@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../utils/helper_utils.dart';
 
-enum Method { post, put, get, delete }
+enum Method { post, put, patch, get, delete }
 
 abstract class ApiRouter {
 

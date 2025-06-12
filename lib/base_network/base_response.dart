@@ -2,6 +2,7 @@
 //Success Function return data
 import 'package:flutter/cupertino.dart';
 
+import '../model/pagedata_model.dart';
 import '../utils/helper_utils.dart';
 
 typedef SuccessHandler<T> = Function(T? data);
@@ -56,6 +57,14 @@ class ServerResponse<T> extends BaseServerResponse<T> {
       final data = json['Data'];
       if (instance != null && data != null) {
         if (data is Map<String, dynamic>) {
+          final pageData = data["PageData"];
+          if (!T.toString().startsWith('PageDataModel') && pageData != null && pageData is List<dynamic>) {
+            return ServerResponse(
+                success: success,
+                errorCode: errorCode,
+                message: msg,
+                data: (pageData.isNotEmpty ? instance(pageData.first) : null));
+          }
           return ServerResponse(
               success: success,
               errorCode: errorCode,
@@ -70,7 +79,7 @@ class ServerResponse<T> extends BaseServerResponse<T> {
         }
       } else {
         return ServerResponse(
-            success: false,
+            success: success,
             errorCode: errorCode, message: msg, data: data);
       }
     } catch (e, s) {

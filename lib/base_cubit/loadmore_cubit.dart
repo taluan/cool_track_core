@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../base_core.dart';
-import '../model/pagedata_model.dart';
 enum LoadMoreStatus { haveMore, loading, finished }
 
 abstract class LoadMoreCubit<T> extends BaseCubit {
@@ -69,7 +68,7 @@ abstract class LoadMoreCubit<T> extends BaseCubit {
       showLoading();
     }
     final response =
-        await apiClient.request(router: apiRouter, target: (json) => PageDataModel<T>.fromJson(json, target));
+        await apiClient.requestDataPaging(router: apiRouter, target: target);
     response.onCompleted(success: (result) {
       if (isClosed) {
         return;

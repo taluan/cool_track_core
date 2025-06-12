@@ -2,6 +2,7 @@
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 
+import '../model/pagedata_model.dart';
 import 'api_router.dart';
 import 'base_response.dart';
 
@@ -49,5 +50,8 @@ abstract class ApiClientRequest {
         required T Function(Map<String, dynamic> json)? target,
         bool isCache = false, Function(List<T>? datas)? cacheDataCallback});
 
+  Future<ServerResponse<PageDataModel<T>>> requestDataPaging<T>(
+      {required ApiRouter router,
+        required T Function(Map<String, dynamic> json)? target});
 
 }

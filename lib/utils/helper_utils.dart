@@ -28,8 +28,10 @@ extension DateTimeEx on DateTime {
 
   String? get toUtcString => toUtc().toIso8601String();
 
-  DateTime get endOfDay => DateTime(this.year, this.month, this.day + 1)
+  DateTime get endOfDay => DateTime(year, month, day + 1)
       .subtract(const Duration(milliseconds: 1));
+
+  DateTime get startOfDay => DateTime(year, month, day);
 
   String? formatString({String dateFormat = AppConst.dateFormat}) {
     try {
@@ -182,33 +184,37 @@ String convertStringUtcToStringLocal(String? utcString, {String dateFormat = App
   return defaultValue;
 }
 
-DateTime? convertStringToDate(String? dateString, String dateFormat) {
-  if (dateString != null && dateString.isNotEmpty) {
+DateTime? convertStringToDate(dynamic? dateString, [String dateFormat = '']) {
     try {
-      if (dateFormat.isEmpty) {
-        return DateTime.parse(dateString);
+      if (dateString is DateTime) {
+        return dateString;
+      } else if (dateString != null && dateString.toString().isNotEmpty) {
+        if (dateFormat.isEmpty) {
+          return DateTime.parse(dateString);
+        }
+        var string = dateString;
+        if (dateFormat.length > string.length) {
+          string = dateString.substring(0, dateFormat.length);
+        }
+        return DateFormat(dateFormat).parse(string);
+      } else {
+        return null;
       }
-      var string = dateString;
-      if (dateFormat.length > string.length) {
-        string = dateString.substring(0, dateFormat.length);
-      }
-      return DateFormat(dateFormat).parse(string);
     } catch (e) {
-      return DateFormat(AppConst.dateFormat).parse(dateString);
-    }
-  } else {
-    return null;
-  }
-}
-
-DateTime? convertStringUtcToLocalDate(String? utcString) {
-  if (utcString != null && utcString.isNotEmpty) {
-    try {
-      return DateTime.parse(utcString).toLocal();
-    } catch (_) {
       return null;
     }
-  } else {
+}
+
+DateTime? convertStringUtcToLocalDate(dynamic? utcString) {
+  try {
+    if (utcString is DateTime) {
+      return utcString;
+    } else if (utcString != null && utcString.toString().isNotEmpty) {
+    return DateTime.parse(utcString).toLocal();
+    } else {
+      return null;
+    }
+  } catch (_) {
     return null;
   }
 }

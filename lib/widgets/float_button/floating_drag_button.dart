@@ -63,7 +63,8 @@ class FloatingDragButtonState extends State<FloatingDragButton> {
           var iconWidget = Material(
             color: Colors.transparent,
             child: FloatingActionButton.small( //<-- SEE HERE
-              backgroundColor: Colors.deepOrangeAccent,
+              backgroundColor: Colors.black12,
+              elevation: 0.5,
               onPressed: () {
                 widget.onTap(context);
               },
