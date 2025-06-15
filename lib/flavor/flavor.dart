@@ -4,10 +4,11 @@ enum FlavorType {dev, uat, pro}
 class FlavorValue {
   String rootUrl;
   String cdnUrl;
+  String socketUrl;
   final String appName;
   final bool showLog;
 
-  FlavorValue({required this.rootUrl, this.cdnUrl = "", required this.appName, this.showLog = false});
+  FlavorValue({required this.rootUrl, this.cdnUrl = "", this.socketUrl = "", required this.appName, this.showLog = false});
 }
 
 mixin AppFlavor {
@@ -37,6 +38,10 @@ mixin AppFlavor {
 
   static String get cdnUrl {
     return _value.cdnUrl;
+  }
+
+  static String get socketUrl {
+    return _value.socketUrl;
   }
 
   static FlavorType get flavorType {

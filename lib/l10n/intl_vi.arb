@@ -20,5 +20,7 @@
   "canh_bao_mat_khau_1": "Vui lòng nhập mật khẩu",
   "canh_bao_mat_khau_2": "Mật khẩu phải lớn hơn hoặc bằng 6 kí tự",
   "canh_bao_mat_khau_3": "Mật khẩu mới không trùng khớp",
-  "canh_bao_mat_khau_4" : "Mật khẩu phải có ít nhất 1 kí tự in hoa và ít nhất 1 chữ số"
+  "canh_bao_mat_khau_4" : "Mật khẩu phải có ít nhất 1 kí tự in hoa và ít nhất 1 chữ số",
+  "chup_anh": "Chụp ảnh",
+  "chon_tu_thu_vien": "Chọn từ thư viện"
 }

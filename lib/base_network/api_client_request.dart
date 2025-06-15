@@ -48,7 +48,7 @@ abstract class ApiClientRequest {
   Future<ServerResponseArray<T>> requestArray<T>(
       {required ApiRouter router,
         required T Function(Map<String, dynamic> json)? target,
-        bool isCache = false, Function(List<T>? datas)? cacheDataCallback});
+        bool isCache = false, Function(List<T> datas)? cacheDataCallback});
 
   Future<ServerResponse<PageDataModel<T>>> requestDataPaging<T>(
       {required ApiRouter router,

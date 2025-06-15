@@ -68,7 +68,6 @@ class AlertWidgetPage extends StatelessWidget {
       _completer?.complete(null);
     } finally {
       _isShowing = false;
-      _completer = null;
     }
 
     return _completer?.future;

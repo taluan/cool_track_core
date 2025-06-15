@@ -107,14 +107,14 @@ class HttpClient extends ApiClientRequest {
   }
 
   @override
-  Future<ServerResponseArray<T>> requestArray<T>({required ApiRouter router, required T Function(Map<String, dynamic> json)? target, bool isCache = false, Function(List<T>? datas)? cacheDataCallback}) async {
+  Future<ServerResponseArray<T>> requestArray<T>({required ApiRouter router, required T Function(Map<String, dynamic> json)? target, bool isCache = false, Function(List<T> datas)? cacheDataCallback}) async {
     try {
       bool newData = false;
       //load cache data
       if (cacheDataCallback != null) {
         cacheManager.getCacheResponseArray<T>(router.cacheUrl, target).then((value) {
           if (!newData && value?.datas != null && value?.datas.isNotEmpty == true) {
-            cacheDataCallback(value?.datas);
+            cacheDataCallback(value?.datas ?? []);
           }
         });
       }

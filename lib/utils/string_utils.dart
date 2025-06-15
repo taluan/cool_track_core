@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:encrypt/encrypt.dart';
 
 const kEmailRegularExpression =
@@ -40,5 +41,8 @@ extension StringExt on String {
     } else {
       return double.tryParse(replaceAll(".", ",").replaceAll(",", ".")) ?? 0;
     }
+  }
+  String removeDiacritic() {
+    return removeDiacritics(this);
   }
 }

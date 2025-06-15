@@ -48,7 +48,11 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
 
               var url = widget.lsUrl.elementAt(index);
               if (url.isNotEmpty && !url.startsWith("http")) {
-                url = "${AppFlavor.cdnUrl}/$url";
+                if (url.startsWith("/")) {
+                  url = "${AppFlavor.cdnUrl}$url";
+                } else {
+                  url = "${AppFlavor.cdnUrl}/$url";
+                }
               }
               var image = CachedNetworkImageProvider(url);
               return PhotoViewGalleryPageOptions(

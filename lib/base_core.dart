@@ -42,6 +42,7 @@ abstract mixin class AppCoreObserver {
     String? title,
     required String? message,
     String? closeTitle,
+    String? okTitle,
     AlertType alertType = AlertType.inform,
   });
 
@@ -95,6 +96,20 @@ class AppCoreConfig {
       return _observer!.showAlert(context: context, title: title, message: message, closeTitle: closeTitle, alertType: AlertType.inform);
     } else {
       return AlertWidgetPage.show(context: context ?? navigatorKey.currentContext!, title: title, message: message, closeTitle: closeTitle, alertType: AlertType.inform);
+    }
+  }
+
+  Future<int?> showConfirm({
+    BuildContext? context,
+    String? title,
+    required String? message,
+    String? closeTitle,
+    String? okTitle,
+  }) {
+    if (_observer != null) {
+      return _observer!.showAlert(context: context, title: title, message: message, closeTitle: closeTitle, okTitle: okTitle, alertType: AlertType.confirm);
+    } else {
+      return AlertWidgetPage.show(context: context ?? navigatorKey.currentContext!, title: title, message: message, closeTitle: closeTitle, okTitle: okTitle, alertType: AlertType.confirm);
     }
   }
 

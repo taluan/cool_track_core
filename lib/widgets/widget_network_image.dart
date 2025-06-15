@@ -33,7 +33,11 @@ class NetworkLoadImage extends StatelessWidget {
   Widget build(BuildContext context) {
     String? url = this.url;
     if (url != null && url.isNotEmpty && !url.startsWith("http")) {
-      url = "${AppFlavor.cdnUrl}/$url";
+      if (url.startsWith("/")) {
+        url = "${AppFlavor.cdnUrl}$url";
+      } else {
+        url = "${AppFlavor.cdnUrl}/$url";
+      }
     }
     if (image != null &&
         (url == null || url.isEmpty || !url.startsWith("http"))) {

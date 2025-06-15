@@ -210,7 +210,12 @@ DateTime? convertStringUtcToLocalDate(dynamic? utcString) {
     if (utcString is DateTime) {
       return utcString;
     } else if (utcString != null && utcString.toString().isNotEmpty) {
-    return DateTime.parse(utcString).toLocal();
+      utcString = utcString.replaceAll("+00:00", "");
+      if (utcString.endsWith("Z")) {
+        return DateTime.parse(utcString).toLocal();
+      } else {
+        return DateTime.parse("${utcString}Z").toLocal();
+      }
     } else {
       return null;
     }

@@ -37,6 +37,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Mật khẩu phải có ít nhất 1 kí tự in hoa và ít nhất 1 chữ số"),
         "canh_bao_nhap_ho_ten":
             MessageLookupByLibrary.simpleMessage("Vui lòng nhập họ và tên"),
+        "chon_tu_thu_vien":
+            MessageLookupByLibrary.simpleMessage("Chọn từ thư viện"),
+        "chup_anh": MessageLookupByLibrary.simpleMessage("Chụp ảnh"),
         "close": MessageLookupByLibrary.simpleMessage("Đóng"),
         "confirm": MessageLookupByLibrary.simpleMessage("Xác nhận"),
         "delete": MessageLookupByLibrary.simpleMessage("Xóa"),

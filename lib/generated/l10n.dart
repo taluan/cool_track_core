@@ -269,6 +269,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Chụp ảnh`
+  String get chup_anh {
+    return Intl.message(
+      'Chụp ảnh',
+      name: 'chup_anh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chọn từ thư viện`
+  String get chon_tu_thu_vien {
+    return Intl.message(
+      'Chọn từ thư viện',
+      name: 'chon_tu_thu_vien',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
