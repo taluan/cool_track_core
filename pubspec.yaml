@@ -16,6 +16,9 @@ dependencies:
   api_response_log:
     git:
       url: https://github.com/taluan/api_response_log.git
+  signalr_core:
+    git:
+      url: https://github.com/taluan/signalr_core.git
 
   intl: ^0.19.0
   intl_utils: ^2.8.7
@@ -50,6 +53,10 @@ dependencies:
   cached_network_image: ^3.1.0
   flutter_json_view: ^1.1.4
   photo_view: ^0.15.0
+
+dependency_overrides:
+  cached_network_image: 3.4.1
+  uuid: 4.4.2
 
 dev_dependencies:
   flutter_test:

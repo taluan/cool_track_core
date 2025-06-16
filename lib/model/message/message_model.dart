@@ -15,21 +15,9 @@ class MessageModel {
   String statusName = "";
   String customerId = "";
   String _avatarName = "";
+  bool isRead = false;
 
   String get avatarName => _avatarName;
-
-  String getInitials(String fullName) {
-    final parts = fullName.trim().split(RegExp(r'\s+'));
-
-    if (parts.length == 1) {
-      // Nếu chỉ có 1 từ: lấy 2 ký tự đầu
-      return parts[0].substring(0, 2).toUpperCase();
-    }
-
-    final first = parts.first.substring(0, 1);
-    final last = parts.last.substring(0, 1);
-    return (first + last).toUpperCase();
-  }
 
   String get lastTimeFormat {
     if (lastMessageAt != null) {
@@ -58,7 +46,8 @@ class MessageModel {
     statusName = json['status_name'] ?? '';
     chatsId = json['chats_id'] ?? '';
     customerId = json['customer_id'] ?? '';
-    _avatarName = getInitials(firstPersonName);
+    isRead = parseBoolean(json['is_read']);
+    _avatarName = getInitialsAvatarName(firstPersonName);
     if (messageType == MessageType.file || messageType == MessageType.image) {
       lastMessage = messageType;
     }

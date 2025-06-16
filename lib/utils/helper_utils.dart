@@ -83,6 +83,8 @@ extension ContextEX on BuildContext {
 
   ThemeData get theme => Theme.of(this);
 
+  AppBarTheme get appBarTheme => AppBarTheme.of(this);
+
   TextTheme get textTheme => theme.textTheme;
 
   InputDecorationTheme get inputDecorationTheme => theme.inputDecorationTheme;
@@ -184,7 +186,7 @@ String convertStringUtcToStringLocal(String? utcString, {String dateFormat = App
   return defaultValue;
 }
 
-DateTime? convertStringToDate(dynamic? dateString, [String dateFormat = '']) {
+DateTime? convertStringToDate(dynamic dateString, [String dateFormat = '']) {
     try {
       if (dateString is DateTime) {
         return dateString;
@@ -205,7 +207,7 @@ DateTime? convertStringToDate(dynamic? dateString, [String dateFormat = '']) {
     }
 }
 
-DateTime? convertStringUtcToLocalDate(dynamic? utcString) {
+DateTime? convertStringUtcToLocalDate(dynamic utcString) {
   try {
     if (utcString is DateTime) {
       return utcString;
@@ -286,6 +288,19 @@ String capitalizeFirstLetter(String? text) {
     // ignore: empty_catches
   } catch (e) {}
   return text;
+}
+
+String getInitialsAvatarName(String fullName) {
+  final parts = fullName.trim().split(RegExp(r'\s+'));
+
+  if (parts.length == 1) {
+    // Nếu chỉ có 1 từ: lấy 2 ký tự đầu
+    return parts[0].substring(0, 2).toUpperCase();
+  }
+
+  final first = parts.first.substring(0, 1);
+  final last = parts.last.substring(0, 1);
+  return (first + last).toUpperCase();
 }
 
 double sizeForRatio(double size) {

@@ -70,7 +70,6 @@ class NetworkLoadImage extends StatelessWidget {
               ),
               progressIndicatorBuilder: (context, url, downloadProgress) =>
                   placeHolder ??
-                  image ??
                   const Center(
                       child: SizedBox(
                     width: 18,
