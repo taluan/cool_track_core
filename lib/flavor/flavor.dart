@@ -1,5 +1,11 @@
 
 enum FlavorType {dev, uat, pro}
+enum AppChannel {
+  appCust('AppCust'),
+  appSuper('AppSuper');
+  final String name;
+  const AppChannel(this.name);
+}
 
 class FlavorValue {
   String rootUrl;
@@ -14,7 +20,10 @@ class FlavorValue {
 mixin AppFlavor {
   static late FlavorType _type;
   static late FlavorValue _value;
+  static late AppChannel _channel;
   static bool? _enabledLog;
+
+  static AppChannel get appChannel => _channel;
 
   static bool get showLog {
     return _value.showLog;
@@ -56,9 +65,10 @@ mixin AppFlavor {
     return _value.appName;
   }
 
-  static void loadConfig({FlavorType flavorType = FlavorType.pro, required FlavorValue value, bool? enabledLog}) {
+  static void loadConfig({FlavorType flavorType = FlavorType.pro, required FlavorValue value, required AppChannel channel, bool? enabledLog}) {
     _type = flavorType;
     _value = value;
+    _channel = channel;
     _enabledLog = enabledLog;
   }
 }

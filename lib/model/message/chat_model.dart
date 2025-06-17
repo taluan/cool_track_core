@@ -85,8 +85,8 @@ class FileChatModel {
   FileChatModel({this.path = "", this.name = ""});
 
   FileChatModel.fromJson(Map<String, dynamic> json) {
-    path = json['path'] ?? '';
-    name = json['name'] ?? '';
+    path = json['path'] ?? json['url'] ?? json['Url'] ?? '';
+    name = json['name'] ?? json['fileName'] ?? json['Url'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -96,7 +96,7 @@ class FileChatModel {
     return data;
   }
 
-  String? get toJsonString {
+  String get toJsonString {
     return jsonEncode(toJson());
   }
 }

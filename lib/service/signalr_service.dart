@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:api_response_log/api_response_log.dart';
+import 'package:base_code_flutter/base_core.dart';
 import 'package:base_code_flutter/flavor/flavor.dart';
 import 'package:base_code_flutter/model/message/chat_model.dart';
 import 'package:flutter/material.dart';
@@ -57,8 +58,9 @@ class SignalRService {
   void confirmConnected(String userId) async {
     try {
       debugPrint("ConfirmConnected");
+      final deviceId = await appUtil.getDeviceId();
       _hubConnection.invoke("ConfirmConnected", args: [
-        {'UserId': userId,}
+        {'UserId': userId, "Channel": AppFlavor.appChannel.name, "DeviceId": deviceId}
       ]);
     } catch (e, s) {
       debugPrint(s.toString());
