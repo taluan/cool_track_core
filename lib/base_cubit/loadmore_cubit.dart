@@ -31,7 +31,8 @@ abstract class LoadMoreCubit<T> extends BaseCubit {
   ApiRouter get apiRouter;
 
   @override
-  void initCubit() {
+  void buildReady() {
+    super.buildReady();
     loadDatas();
   }
 

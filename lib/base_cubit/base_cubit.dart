@@ -10,6 +10,15 @@ import '../base_core.dart';
 abstract class BaseCubit extends Cubit<bool> {
   late BuildContext context;
   final BehaviorSubject<bool?> _bsLoading = BehaviorSubject();
+  bool _isBuildReady = false;
+  bool get isBuildReady => _isBuildReady;
+
+  void setBuildReady() {
+    if (!_isBuildReady) {
+      _isBuildReady = true;
+      buildReady();
+    }
+  }
 
   BaseCubit() : super(false) {
     debugPrint('Khoi tao cubit: $runtimeType');
@@ -22,6 +31,10 @@ abstract class BaseCubit extends Cubit<bool> {
   }
 
   void initCubit() {}
+
+  void buildReady() {
+    debugPrint('cubit buildReady: $runtimeType - ${context.hashCode}');
+  }
 
   Stream<bool?> get loadingStream => _bsLoading.stream;
   bool get isLoading => _bsLoading.valueOrNull ?? false;

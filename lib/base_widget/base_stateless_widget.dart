@@ -187,6 +187,7 @@ class AppBaseWidget<C extends BaseCubit> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.watch<C>();
+    cubit.setBuildReady();
     return BlocBuilder<C, bool>(
       bloc: cubit,
       builder: (context, data) {

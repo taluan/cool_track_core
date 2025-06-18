@@ -86,7 +86,7 @@ class FileChatModel {
 
   FileChatModel.fromJson(Map<String, dynamic> json) {
     path = json['path'] ?? json['url'] ?? json['Url'] ?? '';
-    name = json['name'] ?? json['fileName'] ?? json['Url'] ?? '';
+    name = json['name'] ?? json['file_name'] ?? '';
   }
 
   Map<String, dynamic> toJson() {

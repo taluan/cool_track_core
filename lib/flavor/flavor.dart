@@ -23,7 +23,7 @@ mixin AppFlavor {
   static late AppChannel _channel;
   static bool? _enabledLog;
 
-  static AppChannel get appChannel => _channel;
+  static String get appChannel => _channel.name;
 
   static bool get showLog {
     return _value.showLog;

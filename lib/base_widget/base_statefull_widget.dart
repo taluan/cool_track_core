@@ -32,6 +32,7 @@ abstract class BaseTabbarView<C extends BaseCubit> extends StatelessWidget {
         child: Builder(
             builder: (context) {
               final cubit = context.watch<C>();
+              cubit.setBuildReady();
               final overlays = overlayViews(context);
               return Stack(
                 children: [
