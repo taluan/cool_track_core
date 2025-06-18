@@ -1,12 +1,15 @@
+import 'dart:ui';
+
 import 'package:base_code_flutter/utils/app_const.dart';
 import 'package:base_code_flutter/utils/helper_utils.dart';
+import 'package:flutter/material.dart';
 
 import 'chat_model.dart';
 
 class MessageModel {
   String firstPersonName = "";
   String? avatar;
-  String secondPersonName = "";
+  String? secondPersonName;
   DateTime? lastMessageAt;
   String lastMessage = "";
   String messageType = "";
@@ -15,7 +18,9 @@ class MessageModel {
   String statusName = "";
   String customerId = "";
   String _avatarName = "";
-  bool isRead = false;
+  int unreadCount = 0;
+
+  bool get isRead => unreadCount == 0;
 
   String get avatarName => _avatarName;
 
@@ -38,7 +43,7 @@ class MessageModel {
   MessageModel.fromJson(Map<String, dynamic> json) {
     firstPersonName = json['first_person_name'] ?? '';
     avatar = json['avatar'];
-    secondPersonName = json['second_person_name'] ?? '';
+    secondPersonName = json['second_person_name'];
     lastMessageAt = convertStringUtcToLocalDate(json['last_message_at']);
     lastMessage = json['last_message'] ?? '';
     messageType = json['message_type'] ?? '';
@@ -46,7 +51,7 @@ class MessageModel {
     statusName = json['status_name'] ?? '';
     chatsId = json['chats_id'] ?? '';
     customerId = json['customer_id'] ?? '';
-    isRead = parseBoolean(json['is_read']);
+    unreadCount = parseInt(json["UnreadCount"] ?? json["unread_count"]);
     _avatarName = getInitialsAvatarName(firstPersonName);
     if (messageType == MessageType.file || messageType == MessageType.image) {
       lastMessage = messageType;
@@ -62,5 +67,21 @@ class MessageModel {
     data['status_name'] = statusName;
     data['chats_id'] = chatsId;
     return data;
+  }
+}
+
+mixin MessageStatus {
+  static const String chuaXuLy = "ChuaXuLy";
+  static const String dangXuLy = "DangXuLy";
+  static const String daDong = "DaDong";
+
+  static Color getColorFromStatus(String? status) {
+    if (status == daDong) {
+      return Colors.grey;
+    } else if (status == dangXuLy) {
+      return const Color(0xffff8400);
+    }
+    return const Color(0xffe0e0e0);
+
   }
 }

@@ -37,7 +37,7 @@ class ChatItemView extends StatelessWidget {
               children: [
                 Text(chat.sentTime, style: TextStyle(color: isSender ? Colors.white70 : Colors.black54, fontSize: 10.5),),
                 if (isSender)
-                  Image.asset("assets/images/seen_icon.png", width: 14, color: seen ? appCoreConfig.config?.primaryColor : Colors.white38)
+                  Image.asset("assets/images/seen_icon.png", width: 14, color: seen ? Color(0xFF0266A8) : Colors.white38)
               ],
             )
           ],
