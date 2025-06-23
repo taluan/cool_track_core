@@ -70,7 +70,14 @@ class ServerResponse<T> extends BaseServerResponse<T> {
               errorCode: errorCode,
               message: msg,
               data: (data.isNotEmpty ? instance(data) : null));
-        } else {
+        } else if (data is List<dynamic>) {
+          return ServerResponse(
+              success: success,
+              errorCode: errorCode,
+              message: msg,
+              data: (data.isNotEmpty ? instance(data.first) : null));
+        }
+        else {
           return ServerResponse(
               success: success,
               errorCode: errorCode,

@@ -14,8 +14,10 @@ dependencies:
     sdk: flutter
 
   api_response_log:
+#    path: ../../api_response_log
     git:
       url: https://github.com/taluan/api_response_log.git
+      ref: a2115baa0f43726413b7cefa8204167d467a07fc
   signalr_core:
     git:
       url: https://github.com/taluan/signalr_core.git

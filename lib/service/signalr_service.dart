@@ -124,14 +124,14 @@ class SignalRService {
         final result = await _hubConnection.invoke("SendMessage", args: [
           {'chats_id': chatId, 'sender_id': senderId, "content": content, "message_type": messageType}
         ]);
-        debugPrint("SendMessage: $result");
+        debugPrint("SendMessage socket: $result");
         if (result != null && result['data'] != null) {
           return ChatModel.fromJson(result['data']);
         }
       }
     } catch (e, s) {
       debugPrint(s.toString());
-      debugPrint("SendMessage error: ${e.toString()}");
+      debugPrint("SendMessage socket error: ${e.toString()}");
     }
     return null;
   }
