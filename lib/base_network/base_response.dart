@@ -1,9 +1,7 @@
 
 //Success Function return data
 import 'package:flutter/cupertino.dart';
-
-import '../model/pagedata_model.dart';
-import '../utils/helper_utils.dart';
+import 'dart:convert';
 
 typedef SuccessHandler<T> = Function(T? data);
 //Error Function return Error code and message
@@ -15,6 +13,20 @@ List<T> listJsonToListObject<T>(
     return [];
   }
   return listItem.map((e) => instance(e)).toList();
+}
+
+String? fixBrokenUtf8(String? input) {
+  if (input != null && input != "") {
+    try {
+      // Giải mã từ các byte Latin-1 lỗi → UTF-8 đúng
+      final latin1Bytes = latin1.encode(input);
+      return utf8.decode(latin1Bytes);
+    } catch(e, s) {
+      // debugPrint(s.toString());
+    }
+  }
+  return input;
+
 }
 
 abstract class BaseServerResponse<T> {
@@ -53,7 +65,7 @@ class ServerResponse<T> extends BaseServerResponse<T> {
     try {
       final success = json["Success"] ?? false;
       final errorCode = json["ErrorCode"] ?? 0;
-      final msg = json["UserMessage"] ?? json["DevMessage"];
+      final msg = fixBrokenUtf8(json["UserMessage"] ?? json["DevMessage"]);
       final data = json['Data'];
       if (instance != null && data != null) {
         if (data is Map<String, dynamic>) {
@@ -116,7 +128,7 @@ class ServerResponseArray<T> extends BaseServerResponse<List<T>> {
 
     final success = json["Success"] ?? true;
     final errorCode = json["ErrorCode"] ?? 0;
-    final msg = json["UserMessage"] ?? json["DevMessage"];
+    final msg = fixBrokenUtf8(json["UserMessage"] ?? json["DevMessage"]);
     final data = json['Data'];
     try {
       if (instance != null) {

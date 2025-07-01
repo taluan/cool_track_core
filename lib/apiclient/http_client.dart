@@ -83,8 +83,8 @@ class HttpClient extends ApiClientRequest {
         if (response.body.isNotEmpty) {
           Map<String, dynamic>? json = jsonDecode(response.body);
           final statusCode = json?['status_code'] ?? json?['statusCode'] ?? response.statusCode;
-          final errorCode = json?['error_code'] ?? json?['errorCode'] ?? 0;
-          final msg = _handleService.errorMessage(statusCode, errorCode) ?? json?["Message"] ?? json?["error_message"] ?? json?["errorMessage"] ?? json?["message"] ?? msg_server_error;
+          final errorCode = json?['ErrorCode'] ?? json?['errorCode'] ?? 0;
+          final msg = _handleService.errorMessage(statusCode, errorCode) ?? json?["Message"] ?? json?["UserMessage"] ?? json?["errorMessage"] ?? json?["message"] ?? msg_server_error;
           return ServerResponse(errorCode: response.statusCode, message: msg);
         } else {
           return ServerResponse(errorCode: response.statusCode, message: "${response.reasonPhrase ?? msg_server_error}: ${response.reasonPhrase ?? msg_server_error}");
@@ -159,8 +159,8 @@ class HttpClient extends ApiClientRequest {
         if (response.body.isNotEmpty) {
           Map<String, dynamic>? json = jsonDecode(response.body);
           final statusCode = json?['status_code'] ?? json?['statusCode'] ?? response.statusCode;
-          final errorCode = json?['error_code'] ?? json?['errorCode'] ?? 0;
-          final msg = _handleService.errorMessage(statusCode, errorCode) ?? json?["Message"] ?? json?["error_message"] ?? json?["errorMessage"] ?? json?["message"] ?? msg_server_error;
+          final errorCode = json?['ErrorCode'] ?? json?['errorCode'] ?? 0;
+          final msg = _handleService.errorMessage(statusCode, errorCode) ?? json?["Message"] ?? json?["UserMessage"] ?? json?["errorMessage"] ?? json?["message"] ?? msg_server_error;
           return ServerResponseArray(errorCode: response.statusCode, message: msg);
         } else {
           return ServerResponseArray(errorCode: response.statusCode, message: "${response.reasonPhrase ?? msg_server_error}: ${response.reasonPhrase ?? msg_server_error}");
@@ -358,7 +358,7 @@ class HttpClient extends ApiClientRequest {
 
       debugPrint("URL ${api.method.name}: $url");
       debugPrint("params: $params");
-      debugPrint("upload files: ${request.files}");
+      debugPrint("upload files ${api.files?.keys.toList()} : ${request.files.map((e) => e.filename).toList()}");
       debugPrint("header upload: ${request.headers}");
       //log response =============================================================================
       var streamedResponse = await request.send();
