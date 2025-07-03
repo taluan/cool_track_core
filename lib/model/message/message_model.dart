@@ -77,9 +77,9 @@ mixin MessageStatus {
 
   static Color getColorFromStatus(String? status) {
     if (status == daDong) {
-      return Colors.grey;
+      return Color(0xff1cb100);
     } else if (status == dangXuLy) {
-      return const Color(0xffff8400);
+      return const Color(0xffffb300);
     }
     return const Color(0xffe0e0e0);
 

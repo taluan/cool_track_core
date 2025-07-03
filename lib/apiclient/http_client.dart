@@ -13,6 +13,8 @@ import 'package:path/path.dart' as pathFile;
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
 
 import '../base_core.dart';
 
@@ -327,9 +329,19 @@ class HttpClient extends ApiClientRequest {
                   debugPrint("resizeImage error: ${e.toString()}");
                 }
               }
+              final fileName = fileUpload.path.split("/").last;
+              final mimeType = lookupMimeType(fileUpload.path);
+              MediaType? mediaType = mimeType != null
+                  ? MediaType.parse(mimeType)
+                  : null;
+              // if (fileName.toLowerCase().endsWith(".png")) {
+              //   mediaType = MediaType('image', 'png');
+              // } else if (fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) {
+              //   mediaType = MediaType('image', 'jpeg');
+              // }
               request.files.add(MultipartFile(
                   key, fileUpload.readAsBytes().asStream(), fileUpload.lengthSync(),
-                  filename: fileUpload.path.split("/").last));
+                  filename: fileName, contentType: mediaType));
             }
           }
         }

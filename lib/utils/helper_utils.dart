@@ -291,6 +291,9 @@ String capitalizeFirstLetter(String? text) {
 }
 
 String getInitialsAvatarName(String fullName) {
+  if (fullName.trim().length <= 2) {
+    return fullName.trim();
+  }
   final parts = fullName.trim().split(RegExp(r'\s+'));
 
   if (parts.length == 1) {

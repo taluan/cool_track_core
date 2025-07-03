@@ -7,6 +7,28 @@ import '../utils/helper_utils.dart';
 
 enum Method { post, put, patch, get, delete }
 
+String? createQuery(String column, {String? value, String compareOperator = "contains", String operator = "or"}) {
+  if (value != null && value.isNotEmpty) {
+    final columns = column.split(",");
+    if (columns.length == 1) {
+      return "[\"${column.trim()}\",\"$compareOperator\",\"$value\"]";
+    }
+    return "[${columns.map((e) => "[\"${e.trim()}\",\"$compareOperator\",\"$value\"]").join(",\"$operator\",")}]";
+  }
+  return null;
+}
+
+String joinFilter(List<String?> queries, {String operator = "and"}) {
+  queries = queries..removeWhere((e) => e == null || e == "");
+  if (queries.isNotEmpty) {
+    if (queries.length == 1) {
+      return queries.first ?? "";
+    }
+    return "[${queries.join(",\"$operator\",")}]";
+  }
+  return "";
+}
+
 abstract class ApiRouter {
 
   final String path;
