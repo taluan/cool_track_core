@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../base_core.dart';
+import '../model/pagedata_model.dart';
 enum LoadMoreStatus { haveMore, loading, finished }
 
 abstract class LoadMoreCubit<T> extends BaseCubit {
@@ -21,7 +22,6 @@ abstract class LoadMoreCubit<T> extends BaseCubit {
   BehaviorSubject<LoadMoreStatus> loadMoreStream =
       BehaviorSubject.seeded(LoadMoreStatus.finished);
   BehaviorSubject<List<T>?> dataStream = BehaviorSubject();
-  final countStream = BehaviorSubject<int?>();
   final scrollController = ScrollController();
   int pageIndex = 1;
   int get pageSize => 30;
@@ -76,7 +76,6 @@ abstract class LoadMoreCubit<T> extends BaseCubit {
       }
       List<T> datas = result?.items ?? [];
       if (pageIndex <= 1) {
-        countStream.value = result?.count;
         dataStream.sink.add(datas);
       } else {
         dataStream.sink.add((dataStream.valueOrNull ?? [])..addAll(datas));
@@ -94,12 +93,16 @@ abstract class LoadMoreCubit<T> extends BaseCubit {
       errorHandler(code, msg);
     });
     hideLoading();
+    loadDataCompleted(response.data);
+  }
+
+  void loadDataCompleted(PageDataModel<T>? data) {
+
   }
 
   @override
   void dispose() {
     scrollController.dispose();
-    countStream.close();
     loadMoreStream.close();
     dataStream.close();
     super.dispose();

@@ -232,7 +232,8 @@ class HttpClient extends ApiClientRequest {
     debugPrint("params: $params");
     final headers = await _handleService.requestHeaders();
     debugPrint("header: $headers");
-    LogApiModel logApiModel = LogApiModel(url: url, method: method.name.toUpperCase(), params: jsonEncode(params), header: jsonEncode(headers));
+    final paramEncode = jsonEncode(params);
+    LogApiModel logApiModel = LogApiModel(url: url, method: method.name.toUpperCase(), params: paramEncode, header: jsonEncode(headers));
     ApiLog.addApiLog(logApiModel, enabled: AppFlavor.showLog);
     //log response =============================================================================
     late Response response;
@@ -241,19 +242,19 @@ class HttpClient extends ApiClientRequest {
         case Method.post: {
           response = await client
               .post(Uri.parse(url),
-              headers: headers, body: jsonEncode(params));
+              headers: headers, body: paramEncode);
           break;
         }
         case Method.put: {
           response = await client
               .put(Uri.parse(url),
-              headers: headers, body: jsonEncode(params));
+              headers: headers, body: paramEncode);
           break;
         }
         case Method.patch: {
           response = await client
               .patch(Uri.parse(url),
-              headers: headers, body: jsonEncode(params));
+              headers: headers, body: paramEncode);
           break;
         }
         case Method.delete: {
@@ -354,7 +355,7 @@ class HttpClient extends ApiClientRequest {
       });
 
       //add params
-      final params = api.params;
+      final params = api.mapParam;
       if (params != null) {
         params.forEach((key, value) {
           if (value != null) {

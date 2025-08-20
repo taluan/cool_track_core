@@ -16,7 +16,9 @@ class MessageModel {
   String chatsId = "";
   String status = "";
   String statusName = "";
+  String backgroundStatus = "";
   String customerId = "";
+  String userId = "";
   String _avatarName = "";
   int unreadCount = 0;
 
@@ -49,8 +51,10 @@ class MessageModel {
     messageType = json['message_type'] ?? '';
     status = json['status'] ?? '';
     statusName = json['status_name'] ?? '';
+    backgroundStatus = json['background_status'] ?? '';
     chatsId = json['chats_id'] ?? '';
     customerId = json['customer_id'] ?? '';
+    userId = json['user_id'] ?? '';
     unreadCount = parseInt(json["UnreadCount"] ?? json["unread_count"]);
     _avatarName = getInitialsAvatarName(firstPersonName);
     if (messageType == MessageType.file || messageType == MessageType.image) {
@@ -75,13 +79,13 @@ mixin MessageStatus {
   static const String dangXuLy = "DangXuLy";
   static const String daDong = "DaDong";
 
-  static Color getColorFromStatus(String? status) {
-    if (status == daDong) {
-      return Color(0xff1cb100);
-    } else if (status == dangXuLy) {
-      return const Color(0xffffb300);
-    }
-    return const Color(0xffe0e0e0);
-
-  }
+  // static Color getColorFromStatus(String? status) {
+  //   if (status == daDong) {
+  //     return Color(0xff1cb100);
+  //   } else if (status == dangXuLy) {
+  //     return const Color(0xffffb300);
+  //   }
+  //   return const Color(0xffe0e0e0);
+  //
+  // }
 }

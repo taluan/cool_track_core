@@ -15,6 +15,7 @@ class RoundedTextField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final ValueChanged<String>? onChanged;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final String? Function(String?)? validator;
   final bool? obscureText;
   final bool readOnly;
@@ -52,6 +53,7 @@ class RoundedTextField extends StatelessWidget {
       this.focusedBorder,
       this.onChanged,
       this.controller,
+        this.focusNode,
       this.suffixIcon,
       this.validator,
       this.obscureText,
@@ -89,6 +91,7 @@ class RoundedTextField extends StatelessWidget {
             keyboardType: textInputType,
             inputFormatters: inputFormatters,
             controller: controller,
+            focusNode: focusNode,
             validator: validator ?? (required ? (value) {
               if (value == null || value.isEmpty) {
                 return 'Vui lòng điền thông tin bắt buộc';
@@ -132,7 +135,7 @@ class RoundedTextField extends StatelessWidget {
               prefixIcon: prefixIcon,
               suffixIcon: suffixIcon,
               filled: true,
-              fillColor: !enabled ? Colors.grey : (backgroundColor ?? Colors.white),
+              fillColor: backgroundColor ?? ((!enabled || readOnly) ? const Color(0xFFF5F5F8) : Colors.white),
               focusColor: Colors.white,
               prefixIconConstraints: const BoxConstraints(maxHeight: 48),
             ),

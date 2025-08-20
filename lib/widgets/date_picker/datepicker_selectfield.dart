@@ -111,7 +111,7 @@ class _DatePickerSelectFieldState extends State<DatePickerSelectField> {
       hintText: hintText,
       labelText: widget.labelText,
       textStyle: widget.textStyle,
-      backgroundColor: widget.backgroundColor,
+      backgroundColor: widget.enabled ? widget.backgroundColor ?? Colors.white : null,
       validator: widget.validator ?? (widget.required ? (value) {
         if (value == null || value.isEmpty) {
           return "Vui lòng chọn giá trị";

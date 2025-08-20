@@ -289,6 +289,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Chọn tệp`
+  String get chon_tep {
+    return Intl.message(
+      'Chọn tệp',
+      name: 'chon_tep',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -8,10 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:http/io_client.dart';
 import 'package:signalr_core/signalr_core.dart';
 
+import '../model/message/chat_action_model.dart';
+
+
+mixin ChatActionType {
+  static const int closeChat = 1;
+  static const readMessage = 2;
+}
 
 class SignalRService {
   late HubConnection _hubConnection;
   Function(ChatModel)? onMessageReceived;
+  Function(ChatActionModel)? onActionReceived;
   String _userId = "";
   SignalRService();
 
@@ -34,10 +42,10 @@ class SignalRService {
           .build();
 
       onReceiveMessage();
+      onReceiveAction();
       _hubConnection.onreconnected((text) {
         debugPrint('Connection onreconnected: $text');
         confirmConnected();
-        // onReceiveMessage();
       });
 
       _hubConnection.onclose((error) {
@@ -77,6 +85,32 @@ class SignalRService {
 
   void offReceiveMessage() {
     _hubConnection.off("ReceiveMessage");
+  }
+
+  void onReceiveAction() {
+    debugPrint("onReceiveAction");
+    try {
+      _hubConnection.on('ReceiveActionData', (arguments) {
+        debugPrint("ReceiveActionData: $arguments");
+        if (AppFlavor.isUAT) {
+          ApiLog.addLog(
+              url:
+              "Socket ${AppFlavor.socketUrl}",
+              param: "ReceiveActionData",
+              response: "$arguments");
+        }
+        if (arguments != null && arguments.isNotEmpty) {
+          onActionReceived?.call(ChatActionModel.fromJson(arguments.first));
+        }
+      });
+    } catch (e, s) {
+      debugPrint(s.toString());
+      debugPrint("ReceiveActionData error: ${e.toString()}");
+    }
+  }
+
+  void offReceiveAction() {
+    _hubConnection.off("ReceiveActionData");
   }
 
   void confirmConnected() async {

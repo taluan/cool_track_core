@@ -22,5 +22,6 @@
   "canh_bao_mat_khau_3": "Mật khẩu mới không trùng khớp",
   "canh_bao_mat_khau_4" : "Mật khẩu phải có ít nhất 1 kí tự in hoa và ít nhất 1 chữ số",
   "chup_anh": "Chụp ảnh",
-  "chon_tu_thu_vien": "Chọn từ thư viện"
+  "chon_tu_thu_vien": "Chọn từ thư viện",
+  "chon_tep": "Chọn tệp"
 }

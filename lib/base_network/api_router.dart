@@ -18,7 +18,7 @@ String? createQuery(String column, {String? value, String compareOperator = "con
   return null;
 }
 
-String joinFilter(List<String?> queries, {String operator = "and"}) {
+String? joinFilter(List<String?> queries, {String operator = "and"}) {
   queries = queries..removeWhere((e) => e == null || e == "");
   if (queries.isNotEmpty) {
     if (queries.length == 1) {
@@ -26,33 +26,43 @@ String joinFilter(List<String?> queries, {String operator = "and"}) {
     }
     return "[${queries.join(",\"$operator\",")}]";
   }
-  return "";
+  return null;
 }
 
 abstract class ApiRouter {
 
   final String path;
   final Method method;
-  Map<String, dynamic>? _params;
+  Object? _params;
   final Map<String, List<File>?>? files;
   final bool resizeImage;
 
   ApiRouter(
       {required this.path,
         this.method = Method.post,
-        Map<String, dynamic>? params,
+        Object? params,
         this.files,
         this.resizeImage = false}) {
-    _params = params?..removeWhere((key, value) => value == null);
+    if (params is Map) {
+      Map<String, dynamic>? mapParam = params as Map<String, dynamic>?;
+      mapParam?.removeWhere((key, value) => value == null);
+      _params = mapParam;
+    } else {
+      _params = params;
+    }
+
   }
 
-  Map<String, dynamic>? get params => _params;
+  Object? get params => _params;
+  Map<String, dynamic>? get mapParam => params as Map<String, dynamic>?;
   bool get isUpload => files?.isNotEmpty == true;
 
   String get queryParam {
-    if (params != null && params!.isNotEmpty) {
+    Map<String, dynamic>? mapParam = params as Map<String, dynamic>?;
+    // mapParam?.removeWhere((key, value) => value == null || value == "");
+    if (mapParam != null && mapParam.isNotEmpty) {
       final queryMap = <String, dynamic>{};
-      params!.forEach((key, value) {
+      mapParam.forEach((key, value) {
         if (value is List) {
           queryMap[key] = value; // giữ nguyên list
         } else {

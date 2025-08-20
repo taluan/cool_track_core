@@ -52,7 +52,9 @@ abstract class BaseServerResponse<T> {
   }
 
   Future<void> onError(ErrorHandler error) async {
-    await error(errorCode, message);
+    if (!isSuccess) {
+      await error(errorCode, message);
+    }
   }
 }
 

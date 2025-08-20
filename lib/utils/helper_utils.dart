@@ -91,7 +91,7 @@ extension ContextEX on BuildContext {
 
   ColorScheme get colorScheme => theme.colorScheme;
 
-  bool get isTablet => screenUtil.screenWidth > 600;
+  bool get isTablet => screenUtil.screenWidth > 600 && screenUtil.screenHeight > 600;
 
   C cubit<C>() => watch<C>();
 
@@ -395,4 +395,15 @@ String formatCurrency({
   } catch (e) {
     return '';
   }
+}
+
+String truncateMiddle(String text, int maxLength) {
+  if (text.length <= maxLength) return text;
+  int half = ((maxLength - 3) / 2).floor();
+  return '${text.substring(0, half)}...${text.substring(text.length - half)}';
+}
+
+String truncateStart(String text, int maxLength) {
+  if (text.length <= maxLength) return text;
+  return '...${text.substring(text.length - (maxLength - 5))}';
 }

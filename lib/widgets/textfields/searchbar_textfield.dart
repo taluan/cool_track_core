@@ -58,8 +58,10 @@ class SearchBarTextField extends StatelessWidget {
           prefixIconConstraints:const BoxConstraints(maxWidth: 38, maxHeight: 38),
             suffixIconConstraints:const BoxConstraints(maxWidth: 38, maxHeight: 38),
           suffixIcon: IconButton(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-            icon: const Icon(Icons.close, color: Colors.grey),
+            // padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+            icon: const CircleAvatar(
+                radius: 12, backgroundColor: Color(0xFFE7E8EB),
+                child: Icon(Icons.close, color: Colors.grey, size: 14)),
             onPressed: () {
               editingController?.clear();
               if (onClear != null) {

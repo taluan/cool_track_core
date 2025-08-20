@@ -170,7 +170,7 @@ class _RoundedDropDownState<T extends KeyValueObject> extends State<RoundedDropD
 
   @override
   Widget build(BuildContext context) {
-    final hintText = widget.hintText ?? (widget.labelText != null ? 'Vui lòng chọn ${widget.labelText!.toLowerCase()}' : null);
+    final hintText = widget.hintText ?? (widget.labelText != null ? 'Chọn ${widget.labelText!.toLowerCase()}' : null);
     return RoundedTextField(
       controller: textController,
       readOnly: true,
@@ -186,7 +186,7 @@ class _RoundedDropDownState<T extends KeyValueObject> extends State<RoundedDropD
       } : null),
       textStyle: widget.textStyle,
       textAlign: widget.textAlign,
-      backgroundColor: widget.backgroundColor,
+      backgroundColor: widget.enabled ? widget.backgroundColor ?? Colors.white : null,
       enabled: widget.enabled,
       maxLines: widget.maxLine,
       minLines: 1,

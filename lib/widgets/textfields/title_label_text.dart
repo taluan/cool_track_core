@@ -17,13 +17,13 @@ class TitleLabelText extends StatelessWidget {
       child: Text.rich(
         TextSpan(
           text: labelText ?? '',
-          children: [
-            if (required == true)
-              TextSpan(
-                text: ' *',
-                style: (labelStyle ?? context.textTheme.titleSmall)?.copyWith(color: Colors.red),
-              ),
-          ],
+          // children: [
+          //   if (required == true)
+          //     TextSpan(
+          //       text: ' *',
+          //       style: (labelStyle ?? context.textTheme.titleSmall)?.copyWith(color: Colors.red),
+          //     ),
+          // ],
           style: labelStyle ?? context.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w400),
         ),
         maxLines: 1,
