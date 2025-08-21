@@ -40,7 +40,7 @@ mixin FilePickerMixin {
         barrierColor: Colors.black26,
         builder: (ctx) {
           return CupertinoActionSheet(
-            actions: PickerSoureType.all.map((e) => CupertinoActionSheetAction(
+            actions: sources.map((e) => CupertinoActionSheetAction(
               child: Text(e.title,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
               onPressed: () {

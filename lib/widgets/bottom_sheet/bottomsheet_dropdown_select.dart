@@ -69,7 +69,7 @@ class DropDownSelectionBottomSheet<T extends KeyValueObject > extends StatefulWi
 
 class _DropDownSelectionBottomSheetState<T extends KeyValueObject >
     extends State<DropDownSelectionBottomSheet<T>> {
-  TextEditingController? searchController;
+  late TextEditingController searchController;
   BehaviorSubject<String>? searchOnChange;
   List<T>? selected;
   final listDataStream = BehaviorSubject<List<T>?>();

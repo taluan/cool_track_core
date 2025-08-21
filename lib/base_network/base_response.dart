@@ -67,7 +67,7 @@ class ServerResponse<T> extends BaseServerResponse<T> {
     try {
       final success = json["Success"] ?? false;
       final errorCode = json["ErrorCode"] ?? 0;
-      final msg = fixBrokenUtf8(json["UserMessage"] ?? json["DevMessage"]);
+      final msg = fixBrokenUtf8(json["UserMessage"] ?? json["DevMessage"]) ?? json["Message"];
       final data = json['Data'];
       if (instance != null && data != null) {
         if (data is Map<String, dynamic>) {
@@ -130,7 +130,7 @@ class ServerResponseArray<T> extends BaseServerResponse<List<T>> {
 
     final success = json["Success"] ?? true;
     final errorCode = json["ErrorCode"] ?? 0;
-    final msg = fixBrokenUtf8(json["UserMessage"] ?? json["DevMessage"]);
+    final msg = fixBrokenUtf8(json["UserMessage"] ?? json["DevMessage"]) ?? json["Message"];
     final data = json['Data'];
     try {
       if (instance != null) {

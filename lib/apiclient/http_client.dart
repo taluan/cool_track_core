@@ -84,9 +84,10 @@ class HttpClient extends ApiClientRequest {
       } else {
         if (response.body.isNotEmpty) {
           Map<String, dynamic>? json = jsonDecode(response.body);
-          final statusCode = json?['status_code'] ?? json?['statusCode'] ?? response.statusCode;
-          final errorCode = json?['ErrorCode'] ?? json?['errorCode'] ?? 0;
-          final msg = _handleService.errorMessage(statusCode, errorCode) ?? json?["Message"] ?? json?["UserMessage"] ?? json?["errorMessage"] ?? json?["message"] ?? msg_server_error;
+          if (json != null) {
+            return ServerResponse.parseJson(json, null);
+          }
+          final msg = _handleService.errorMessage(response.statusCode, response.statusCode) ?? msg_server_error;
           return ServerResponse(errorCode: response.statusCode, message: msg);
         } else {
           return ServerResponse(errorCode: response.statusCode, message: "${response.reasonPhrase ?? msg_server_error}: ${response.reasonPhrase ?? msg_server_error}");
@@ -160,9 +161,10 @@ class HttpClient extends ApiClientRequest {
       } else {
         if (response.body.isNotEmpty) {
           Map<String, dynamic>? json = jsonDecode(response.body);
-          final statusCode = json?['status_code'] ?? json?['statusCode'] ?? response.statusCode;
-          final errorCode = json?['ErrorCode'] ?? json?['errorCode'] ?? 0;
-          final msg = _handleService.errorMessage(statusCode, errorCode) ?? json?["Message"] ?? json?["UserMessage"] ?? json?["errorMessage"] ?? json?["message"] ?? msg_server_error;
+          if (json != null) {
+            return ServerResponseArray.parseJson(json, null);
+          }
+          final msg = _handleService.errorMessage(response.statusCode, response.statusCode) ?? msg_server_error;
           return ServerResponseArray(errorCode: response.statusCode, message: msg);
         } else {
           return ServerResponseArray(errorCode: response.statusCode, message: "${response.reasonPhrase ?? msg_server_error}: ${response.reasonPhrase ?? msg_server_error}");

@@ -5,7 +5,7 @@ import '../../../utils/app_const.dart';
 class SearchBarTextField extends StatelessWidget {
   const SearchBarTextField({super.key,
     this.autofocus = true,
-    this.editingController,
+    required this.editingController,
     this.hintText,
     this.margin,
     this.onFieldSubmitted,
@@ -17,7 +17,7 @@ class SearchBarTextField extends StatelessWidget {
 
   final bool autofocus;
   final EdgeInsetsGeometry? margin;
-  final TextEditingController? editingController;
+  final TextEditingController editingController;
   final String? hintText;
   final ValueChanged<String>? onFieldSubmitted;
   final ValueChanged<String>? onChanged;
@@ -57,17 +57,22 @@ class SearchBarTextField extends StatelessWidget {
           isDense: true,
           prefixIconConstraints:const BoxConstraints(maxWidth: 38, maxHeight: 38),
             suffixIconConstraints:const BoxConstraints(maxWidth: 38, maxHeight: 38),
-          suffixIcon: IconButton(
-            // padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-            icon: const CircleAvatar(
-                radius: 12, backgroundColor: Color(0xFFE7E8EB),
-                child: Icon(Icons.close, color: Colors.grey, size: 14)),
-            onPressed: () {
-              editingController?.clear();
-              if (onClear != null) {
-                onClear!();
-              }
-            },
+          suffixIcon: ValueListenableBuilder(
+              valueListenable: editingController,
+              builder: (context, data, widget) {
+                return data.text.isEmpty ? const SizedBox() : IconButton(
+                // padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                icon: const CircleAvatar(
+                    radius: 12, backgroundColor: Color(0xFFE7E8EB),
+                    child: Icon(Icons.close, color: Colors.grey, size: 14)),
+                onPressed: () {
+                  editingController?.clear();
+                  if (onClear != null) {
+                    onClear!();
+                  }
+                },
+              );
+            }
           ),
         ),
         onFieldSubmitted: onFieldSubmitted,
