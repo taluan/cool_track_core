@@ -63,7 +63,7 @@ class RoundedDropDown<T extends KeyValueObject> extends StatefulWidget {
   T? selectedItem;
   final String? labelText;
   final String? hintText;
-  final Function(T)? onChanged;
+  final Function(T?)? onChanged;
   final FormFieldValidator<String>? validator;
   final DropDownValueController<T>? controller;
   final bool enabled;
@@ -81,6 +81,7 @@ class RoundedDropDown<T extends KeyValueObject> extends StatefulWidget {
   final int maxLine;
   final Color? backgroundColor;
   final bool required;
+  final bool showClear;
   final Widget? Function(T)? titleBuilder;
 
   RoundedDropDown({
@@ -106,6 +107,7 @@ class RoundedDropDown<T extends KeyValueObject> extends StatefulWidget {
     this.maxLine = 1,
     this.isCache = true,
     this.searchLocal = true,
+    this.showClear = false,
     this.titleBuilder,
   })  : assert(
   selectedItem == null || controller == null,
@@ -178,7 +180,7 @@ class _RoundedDropDownState<T extends KeyValueObject> extends State<RoundedDropD
       padding: widget.padding,
       required: widget.required,
       labelText: widget.labelText,
-      hintText: hintText,
+      hintText: widget.enabled ? hintText : "",
       validator: widget.validator ?? (widget.required ? (value) {
         if (value == null || value.isEmpty) {
           return "Vui lòng chọn giá trị";
@@ -187,13 +189,32 @@ class _RoundedDropDownState<T extends KeyValueObject> extends State<RoundedDropD
       textStyle: widget.textStyle,
       textAlign: widget.textAlign,
       backgroundColor: widget.enabled ? widget.backgroundColor ?? Colors.white : null,
-      enabled: widget.enabled,
+      // enabled: widget.enabled,
       maxLines: widget.maxLine,
       minLines: 1,
       suffixIconConstraints:
       const BoxConstraints(minHeight: 24, minWidth: 34),
       prefixIcon: widget.prefixIcon,
-      suffixIcon: widget.suffixIcon ??  const Icon(Icons.keyboard_arrow_down_outlined, size: 22, color: Colors.grey),
+      suffixIcon: widget.suffixIcon ?? (widget.showClear ? ValueListenableBuilder(
+          valueListenable: textController,
+          builder: (context, data, w) {
+            return data.text.isEmpty ? const Icon(Icons.keyboard_arrow_down_outlined, size: 24, color: Colors.grey) : IconButton(
+              // padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+              icon: const CircleAvatar(
+                  radius: 12, backgroundColor: Color(0xFFD8D8DA),
+                  child: Icon(Icons.close, color: Colors.grey, size: 14)),
+              onPressed: () {
+                if (widget.controller != null) {
+                  widget.controller?.selectedItem = null;
+                } else {
+                  widget.selectedItem = null;
+                  textController.text = "";
+                }
+                widget.onChanged?.call(null);
+              },
+            );
+          }
+      ) : const Icon(Icons.keyboard_arrow_down_outlined, size: 24, color: Colors.grey)),
       onTap: widget.enabled
           ? () async {
         FocusScope.of(context).unfocus();

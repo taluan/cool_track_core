@@ -67,9 +67,9 @@ class HttpClient extends ApiClientRequest {
               return await request(router: router, target: target, isCache: isCache);
             }
           }
-          await _handleService.processExpiredToken();
-          return ServerResponse(errorCode: 401, message: "");
         }
+        await _handleService.processExpiredToken();
+        return ServerResponse(errorCode: 401, message: "");
       }
 
       if (response.statusCode >= 200 && response.statusCode < 300 && response.body.isNotEmpty) {
@@ -116,8 +116,8 @@ class HttpClient extends ApiClientRequest {
       //load cache data
       if (cacheDataCallback != null) {
         cacheManager.getCacheResponseArray<T>(router.cacheUrl, target).then((value) {
-          if (!newData && value?.datas != null && value?.datas.isNotEmpty == true) {
-            cacheDataCallback(value?.datas ?? []);
+          if (!newData && value?.data != null && value?.data?.isNotEmpty == true) {
+            cacheDataCallback(value?.data ?? []);
           }
         });
       }

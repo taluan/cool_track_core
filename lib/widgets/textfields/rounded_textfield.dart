@@ -124,7 +124,7 @@ class RoundedTextField extends StatelessWidget {
                     ? TextCapitalization.none
                     : TextCapitalization.sentences),
             decoration: InputDecoration(
-              contentPadding: padding ?? const EdgeInsets.symmetric(vertical: 13, horizontal: 10),
+              contentPadding: padding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
               focusedBorder: focusedBorder,
               floatingLabelBehavior: FloatingLabelBehavior.never,
               errorMaxLines: 2,

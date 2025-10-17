@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -77,7 +78,7 @@ extension ContextEX on BuildContext {
 
   double? get iconSize => IconTheme.of(this).size;
 
-  double get paddingBottom => screenUtil.bottomBarHeight >= 18 ? 18 : screenUtil.bottomBarHeight;
+  double get paddingBottom => screenUtil.bottomBarHeight >= 20 && Platform.isIOS ? 20 : screenUtil.bottomBarHeight;
 
   EdgeInsets get viewInsets => MediaQuery.of(this).viewInsets;
 
@@ -94,6 +95,7 @@ extension ContextEX on BuildContext {
   bool get isTablet => screenUtil.screenWidth > 600 && screenUtil.screenHeight > 600;
 
   C cubit<C>() => watch<C>();
+  C cubitRead<C>() => read<C>();
 
   void dismissKeyboard() {
     FocusScope.of(this).unfocus();

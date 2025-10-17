@@ -7,9 +7,11 @@ class FirebaseTokenService {
   static final FirebaseTokenService instance = FirebaseTokenService._instance();
 
   Future<void> sendToken({required String token}) async {
-    final deviceId = await appUtil.getDeviceId();
-    final deviceInfo = await appUtil.getDeviceInfo();
-    await apiClient.request(router: FirebaseTokenApiRouter.addOrUpdate(token: token, device_id: deviceId ?? "unknow", device_type: deviceInfo?.deviceModel), target: null);
+    if (token.isNotEmpty) {
+      final deviceId = await appUtil.getDeviceId();
+      final deviceInfo = await appUtil.getDeviceInfo();
+      await apiClient.request(router: FirebaseTokenApiRouter.addOrUpdate(token: token, device_id: deviceId ?? "unknow", device_type: deviceInfo?.deviceModel), target: null);
+    }
   }
 
   Future<void> deleteToken(String userId) async {

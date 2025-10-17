@@ -2,7 +2,8 @@
 enum FlavorType {dev, uat, pro}
 enum AppChannel {
   appCust('AppCust'),
-  appSuper('AppSuper');
+  appSuper('AppSuper'),
+  appTenant('AppTenant');
   final String name;
   const AppChannel(this.name);
 }

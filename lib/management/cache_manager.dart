@@ -52,7 +52,7 @@ class CacheManager {
     }
   }
 
-  Future<ServerResponse<T>?> getCacheResponse<T>(String url, T Function(Map<String, Object?>)? target) async {
+  Future<BaseServerResponse<T>?> getCacheResponse<T>(String url, T Function(Map<String, Object?>)? target) async {
     try {
       final body = await getCacheData(url) as String?;
       if (body != null) {
@@ -71,7 +71,7 @@ class CacheManager {
     return null;
   }
 
-  Future<ServerResponseArray<T>?> getCacheResponseArray<T>(String url, T Function(Map<String, Object?>)? target) async {
+  Future<BaseServerResponse<List<T>>?> getCacheResponseArray<T>(String url, T Function(Map<String, Object?>)? target) async {
     try {
       final body = await getCacheData(url) as String?;
       if (body != null) {
