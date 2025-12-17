@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:base_code_flutter/base_core.dart';
 import 'package:base_code_flutter/flavor/flavor.dart';
 import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 
@@ -36,31 +35,37 @@ class WebviewCubit extends BaseCubit {
     debugPrint("webview url: $url");
     showLoading();
 
-    controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Colors.white)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            if (progress == 100) {
-              hideLoading();
-            }
-          },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {
+    late final PlatformWebViewControllerCreationParams params;
+    params = const PlatformWebViewControllerCreationParams();
+
+    final WebViewController controller = WebViewController.fromPlatformCreationParams(params);
+
+    controller
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..setBackgroundColor(Colors.white)
+    ..setNavigationDelegate(
+      NavigationDelegate(
+        onProgress: (int progress) {
+          if (progress == 100) {
             hideLoading();
-          },
-          onWebResourceError: (WebResourceError error) {
-            showError(message: error.toString());
-          },
-          onNavigationRequest: (NavigationRequest request) {
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(
-        Uri.parse(url),
-      );
+          }
+        },
+        onPageStarted: (String url) {},
+        onPageFinished: (String url) {
+          hideLoading();
+        },
+        onWebResourceError: (WebResourceError error) {
+          showError(message: error.toString());
+        },
+        onNavigationRequest: (NavigationRequest request) {
+          return NavigationDecision.navigate;
+        },
+      ),
+    )
+    ..loadRequest(Uri.parse(url));
+
+    this.controller = controller;
+
       // ..addJavaScriptChannel(
       //   webViewChannelName,
       //   onMessageReceived: (message) =>

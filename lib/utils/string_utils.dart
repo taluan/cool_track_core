@@ -45,4 +45,8 @@ extension StringExt on String {
   String removeDiacritic() {
     return removeDiacritics(this);
   }
+
+  bool equalsIgnoreCase(String? value) {
+    return toLowerCase() == value?.toLowerCase();
+  }
 }

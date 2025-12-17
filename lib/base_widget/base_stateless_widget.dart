@@ -33,9 +33,9 @@ mixin BaseStateContent<C extends BaseCubit> on StatelessWidget {
     FocusScope.of(context).unfocus();
   }
 
-  void onClickedBack(BuildContext context) {
-    Navigator.of(context).maybePop();
-  }
+  // void onClickedBack(BuildContext context) {
+  //   Navigator.of(context).maybePop();
+  // }
 
   void popNavigator([dynamic obj]) {
     Navigator.of(context).maybePop(obj);

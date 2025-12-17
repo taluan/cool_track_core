@@ -84,11 +84,11 @@ extension ContextEX on BuildContext {
 
   ThemeData get theme => Theme.of(this);
 
-  AppBarTheme get appBarTheme => AppBarTheme.of(this);
+  AppBarThemeData get appBarTheme => AppBarTheme.of(this);
 
   TextTheme get textTheme => theme.textTheme;
 
-  InputDecorationTheme get inputDecorationTheme => theme.inputDecorationTheme;
+  InputDecorationThemeData get inputDecorationTheme => theme.inputDecorationTheme;
 
   ColorScheme get colorScheme => theme.colorScheme;
 

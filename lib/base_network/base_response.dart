@@ -163,7 +163,7 @@ class ServerResponseArray<T> extends BaseServerResponse<List<T>> {
             success: success,
             errorCode: errorCode,
           message: msg,
-          data: data is List<dynamic> ? data : data["Items"],
+          data: data is List<dynamic> ? data : data?["PageData"],
         );
       }
     } catch (e, s) {
