@@ -49,3 +49,16 @@ TextInputFormatter decimalTextInputFormatter(
       maxValue: maxValue,
       allowNegative: allowNegative,
     );
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+      @override
+      TextEditingValue formatEditUpdate(
+          TextEditingValue oldValue,
+          TextEditingValue newValue,
+          ) {
+            return newValue.copyWith(
+                  text: newValue.text.toUpperCase(),
+                  selection: newValue.selection,
+            );
+      }
+}

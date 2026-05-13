@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../base_core.dart';
 import 'custom_route_builder.dart';
 
 mixin AppRoutes {
@@ -66,34 +67,74 @@ mixin AppRoutes {
     ),));
   }
 
-  static dynamic showBottomSheet(BuildContext context, Widget page) {
+  static dynamic showBottomSheet(BuildContext context, Widget page, {bool isDismissible = true, AnimationController? animationController}) async {
+    final isIpad26 = await appUtil.isIpadIOS26(context);
+    if (!context.mounted) {
+      return;
+    }
     return showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder( // <-- SEE HERE
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20.0),
-          ),
+      context: context,
+      shape: const RoundedRectangleBorder( // <-- SEE HERE
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
         ),
-        isScrollControlled: true,
-        clipBehavior: Clip.hardEdge,
-        useSafeArea: true,
-        builder: (_) => page);
+      ),
+      isDismissible: isDismissible && !isIpad26,
+      isScrollControlled: true,
+      clipBehavior: Clip.hardEdge,
+      useSafeArea: true,
+      transitionAnimationController: animationController,
+      builder: (BuildContext context) {
+        if (isIpad26 && isDismissible) { //Fix bug auto dismiss in ipad ios 26
+          return TapRegion(
+              onTapOutside: (event) {
+                if (event.position == Offset.zero) {
+                  return;
+                }
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
+              },
+              child: page // your dialog content
+          );
+        } else {
+          return page;
+        }
+      },);
   }
 
 
   static dynamic showDialogPopup(BuildContext context, Widget dialog,
       {bool dismissible = true}) async {
+    final isIpad26 = await appUtil.isIpadIOS26(context);
+    if (!context.mounted) {
+      return;
+    }
     return showDialog(
         context: context,
-        barrierDismissible: dismissible,
+        barrierDismissible: dismissible && !isIpad26,
         routeSettings: RouteSettings(
           name: dialog.runtimeType.toString(),
         ),
         builder: (context) {
-          return PopScope(
-            canPop: dismissible,
-            child: dialog,
-          );
+          if (isIpad26 && dismissible) { //Fix bug auto dismiss in ipad ios 26
+            return TapRegion(
+                onTapOutside: (event) {
+                  if (event.position == Offset.zero) {
+                    return;
+                  }
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
+                },
+                child: dialog // your dialog content
+            );
+          } else {
+            return PopScope(
+              canPop: dismissible,
+              child: dialog,
+            );
+          }
         });
   }
 }

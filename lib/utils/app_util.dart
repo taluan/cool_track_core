@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile_device_identifier/mobile_device_identifier.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -73,6 +74,22 @@ class AppUtil {
       }
     } catch (_) {}
     return _deviceInfo;
+  }
+
+  Future<int> iosMajorVersion() async {
+
+    final deviceInfo = await getDeviceInfo();
+    if (deviceInfo == null) {
+      return 0;
+    }
+
+    return int.tryParse(
+      deviceInfo.systemVersion.split('.').first,
+    ) ?? 0;
+  }
+
+  Future<bool> isIpadIOS26(BuildContext context) async {
+    return context.isIpad && (await iosMajorVersion() >=26);
   }
 
   DeviceInfoModel _readAndroidBuildData(AndroidDeviceInfo data) {

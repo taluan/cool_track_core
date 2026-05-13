@@ -28,7 +28,6 @@ class HttpClient extends ApiClientRequest {
     return _instance ??= HttpClient._(handleService);
   }
   bool _refreshTokenLoading = false;
-  DateTime _refreshTokenTime = DateTime.now().subtract(const Duration(seconds: 30));
 
 
   @override
@@ -48,20 +47,14 @@ class HttpClient extends ApiClientRequest {
       }
 
       final response = await _request(router);
-      if (response.statusCode == 404) {
-        return ServerResponse(errorCode: 404, message: msg_api_notfound);
-      } else if (response.statusCode == 503) {
-        return ServerResponse(errorCode: 503, message: '503 Service Temporarily Unavailable');
-      } else if (response.statusCode == 504) {
-        return ServerResponse(errorCode: 504, message: '504 Gateway Timeout ERROR');
-      } else if (response.statusCode == 401 ) {
+      if (response.statusCode == 401 ) {
         //unauthorized token
         if (_handleService.isLoggedIn) {
           if (_refreshTokenLoading) { //nếu đang refesh token thì request lại sau 3 giây
             await Future.delayed(const Duration(seconds: 3));
             return request(router: router, target: target, isCache: isCache);
           } else {
-            bool refreshSuccess = await _refreshToken();
+            bool refreshSuccess = await refreshToken();
             if (refreshSuccess) {
               // if refresh token success call request again
               return await request(router: router, target: target, isCache: isCache);
@@ -123,13 +116,7 @@ class HttpClient extends ApiClientRequest {
       }
 
       final response = await _request(router);
-      if (response.statusCode == 404) {
-        return ServerResponseArray(errorCode: 404, message: msg_api_notfound);
-      } else if (response.statusCode == 503) {
-        return ServerResponseArray(errorCode: 503, message: '503 Service Temporarily Unavailable');
-      } else if (response.statusCode == 504) {
-        return ServerResponseArray(errorCode: 504, message: '504 Gateway Timeout ERROR');
-      } else if (response.statusCode == 401 ) {
+      if (response.statusCode == 401 ) {
         //token expired
         //unauthorized token
         if (_handleService.isLoggedIn) {
@@ -137,7 +124,7 @@ class HttpClient extends ApiClientRequest {
             await Future.delayed(const Duration(seconds: 3));
             return requestArray(router: router, target: target, isCache: isCache);
           } else {
-            bool refreshSuccess = await _refreshToken();
+            bool refreshSuccess = await refreshToken();
             if (refreshSuccess) {
               // if refresh token success call request again
               return await requestArray(
@@ -193,17 +180,14 @@ class HttpClient extends ApiClientRequest {
   ///
   /// implement refresh token
   ///
-  Future<bool> _refreshToken() async {
-    final inSeconds = DateTime.now().difference(_refreshTokenTime).inSeconds;
-    debugPrint("refreshToken inSeconds: $inSeconds");
-    if (inSeconds < 30) {
-      return false;
-    }
+  @override
+  Future<bool> refreshToken() async {
     try {
       _refreshTokenLoading = true;
-      final response = await _request(_handleService.refreshTokenApi);
+      final response = await _request(_handleService.refreshTokenApi).timeout(Duration(seconds: 15), onTimeout: () {
+        throw TimeoutException("Refresh token timeout!");
+      });
       _refreshTokenLoading = false;
-      _refreshTokenTime = DateTime.now();
       if (response.statusCode == 200) {
         Map<String, dynamic>? json = jsonDecode(response.body);
         if (json != null) {
@@ -213,6 +197,8 @@ class HttpClient extends ApiClientRequest {
 
     } catch(e) {
       return false;
+    } finally {
+      _refreshTokenLoading = false;
     }
     return false;
   }
@@ -282,6 +268,24 @@ class HttpClient extends ApiClientRequest {
         logApiModel.response = response.reasonPhrase ?? response.body;
       } else {
         logApiModel.response = response.body.toString();
+      }
+
+      if (response.statusCode == 401 && api.path != _handleService.refreshTokenApi.path) {
+        //unauthorized token
+        if (_handleService.isLoggedIn) {
+          if (_refreshTokenLoading) { //nếu đang refesh token thì request lại sau 3 giây
+            await Future.delayed(const Duration(seconds: 3));
+            return await _request(api);
+          } else {
+            bool refreshSuccess = await refreshToken();
+            if (refreshSuccess) {
+              // if refresh token success call request again
+              return await _request(api);
+            }
+          }
+          await _handleService.processExpiredToken();
+          return response;
+        }
       }
       return response;
     } catch (e, s) {

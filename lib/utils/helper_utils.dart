@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -93,6 +94,8 @@ extension ContextEX on BuildContext {
   ColorScheme get colorScheme => theme.colorScheme;
 
   bool get isTablet => screenUtil.screenWidth > 600 && screenUtil.screenHeight > 600;
+
+  bool get isIpad => isTablet && defaultTargetPlatform == TargetPlatform.iOS;
 
   C cubit<C>() => watch<C>();
   C cubitRead<C>() => read<C>();

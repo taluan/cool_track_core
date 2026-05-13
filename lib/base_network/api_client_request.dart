@@ -54,4 +54,6 @@ abstract class ApiClientRequest {
       {required ApiRouter router,
         required T Function(Map<String, dynamic> json)? target});
 
+  Future<bool> refreshToken();
+
 }
